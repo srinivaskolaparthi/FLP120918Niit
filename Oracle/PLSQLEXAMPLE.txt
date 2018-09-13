@@ -1,0 +1,673 @@
+============================================COMMAND TO INCREASE LINE-SIZE==========================================
+SET LINESIZE 200
+============================================TO DISPLAY OUTPUT ON CONSOLE============================================
+SET SERVEROUTPUT ON
+============================================FIRST PL/SQL DEMO=======================================================
+BEGIN
+DBMS_OUTPUT.PUT_LINE('Welcome To PL/SQL');
+END;
+=====================GETTING COLLUM VALUES INTO LOCAL VARIABLES IN PL/SQL BLOCK=====================
+DECLARE
+	x VARCHAR(10);
+BEGIN
+	SELECT ename INTO x FROM emp WHERE empno = 7369;
+	DBMS_OUTPUT.PUT_LINE('Employee Name : ' || x);
+END;
+====================ERROR TRYING TO GET MULTIPLE LINES FROM SELECT INTO LOCAL VARIABLES==============
+DECLARE
+	x VARCHAR(10);
+BEGIN
+	SELECT ename INTO x FROM emp;
+	DBMS_OUTPUT.PUT_LINE('Employee Name : ' || x);
+END;
+
+================================IN OPERATOR=============================================
+DECLARE
+	x VARCHAR2(20) := 'IBM';
+BEGIN
+	IF x IN  ('HP', 'DELL', 'IBM', 'CTS') THEN
+		DBMS_OUTPUT.PUT_LINE('IBM found');
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('IBM not found');
+	END IF;
+END;
+================================BETWEEEN operator======================================
+DECLARE
+	x NUMBER(20):=15;
+BEGIN
+	IF x BETWEEN 10 AND 20 THEN
+		DBMS_OUTPUT.PUT_LINE('x in RANGE');
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('x out of RANGE');
+	END IF;
+END;
+==============================IS-NULL operator==========================================
+DECLARE
+	x VARCHAR2(20):='IBM';
+BEGIN
+	IF x IS NULL THEN
+		DBMS_OUTPUT.PUT_LINE('x is NULL');
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('x is NOT NULL');
+	END IF;
+END;
+=============================LIKE operator==============================================
+DECLARE
+	x VARCHAR2(20) := 'BANGALORE';
+BEGIN
+	IF x LIKE '%GALOR%' THEN
+		DBMS_OUTPUT.PUT_LINE('String found');
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('String not found');
+	END IF;
+END;
+===================================IF-ELSEIF-ELSEIF-ELSE==================================
+DECLARE
+  i NUMBER(10);
+BEGIN
+  i := 9;
+
+  IF i > 10 THEN
+    DBMS_OUTPUT.PUT_LINE('i is a Big Number');
+  ELSIF i < 5 THEN
+    DBMS_OUTPUT.PUT_LINE('i is a Small Number');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('i is a Medium Number');
+  END IF;
+
+  DBMS_OUTPUT.PUT_LINE('Welcome To IBM.... ' || i);
+END;
+======================SWITCH-CASE SIMPLE DEMO-1===============================
+DECLARE
+	x VARCHAR(10) := 'B';
+BEGIN
+	CASE
+		WHEN x = 'A' THEN
+			DBMS_OUTPUT.PUT_LINE('A');
+		WHEN x = 'B' THEN
+			DBMS_OUTPUT.PUT_LINE('B');
+		WHEN x = 'C' THEN
+			DBMS_OUTPUT.PUT_LINE('C');
+		WHEN x = 'D' THEN
+			DBMS_OUTPUT.PUT_LINE('D');
+		WHEN x = 'E' THEN
+			DBMS_OUTPUT.PUT_LINE('E');
+		ELSE
+			DBMS_OUTPUT.PUT_LINE('NOT FOUND');
+	END CASE;
+END;
+--------------------------SWITCH-CASE SIMPLE DEMO-2----------------------------
+DECLARE
+	x VARCHAR(10) := 'b';
+BEGIN
+	CASE x
+		WHEN 'A' THEN
+			dbms_output.put_line('X = A');
+		WHEN 'B' THEN
+			dbms_output.put_line('X = B');
+		ELSE
+			dbms_output.put_line('NOT FOUND');
+	END CASE;
+END;
+=========================BASIC-LOOP DEMO-1============================================
+DECLARE
+	x NUMBER(3) := 1;
+BEGIN
+	LOOP
+		DBMS_OUTPUT.PUT_LINE('x : ' || x);
+		IF x > 10 THEN
+			EXIT;
+		END IF;
+	END LOOP;
+END;
+--------------------------BASIC-LOOP DEMO-2---------------------------------------
+
+DECLARE
+	x NUMBER(3) := 1;
+BEGIN
+	LOOP
+		DBMS_OUTPUT.PUT_LINE('x : ' || x);
+		EXIT WHEN x > 10;
+	END LOOP;
+END;
+---------------------------BASIC-LOOP DEMO-3---------------------------------------
+DECLARE
+	i NUMBER(10);
+BEGIN
+	i := 1;
+	LOOP
+		DBMS_OUTPUT.PUT_LINE('i = ' || i);
+		i := i + 1;
+		EXIT WHEN i > 10;
+	END LOOP;
+END;
+==================================WHILE-LOOP==============================================
+DECLARE
+	i NUMBER(10);
+BEGIN
+	i := 1;
+	WHILE i < 10 LOOP
+		DBMS_OUTPUT.PUT_LINE('i = ' || i);
+		i := i + 1;
+	END LOOP;
+END;
+===============================FOR-LOO DEMO=======================================
+BEGIN
+	FOR i IN 1..10 LOOP
+		DBMS_OUTPUT.PUT_LINE('I : '|| i);
+	END LOOP;
+END; 
+-----------------------------FOR-LOOP REVERSE DEMO--------------------------------
+BEGIN
+	FOR i IN REVERSE 1..10  LOOP
+		DBMS_OUTPUT.PUT_LINE('I : '|| i);
+	END LOOP;
+END; 
+----------------------------FOR-LOOP USING "IN" AND SELECT STATEMENT---------------
+BEGIN
+	FOR r IN (SELECT * FROM emp) LOOP
+		DBMS_OUTPUT.PUT_LINE("NAME : " || r.ename);
+	END LOOP;
+END;
+==============================REFERENCED TYPE============================================================
+DECLARE
+	ref emp.ename%TYPE;
+	recordf emp%ROWTYPE;
+BEGIN
+	SELECT ename INTO ref FROM emp WHERE empno=7369;
+	DBMS_OUTPUT.PUT_LINE('Name Of Employee : ' || ref);
+	SELECT ename INTO recordf.ename FROM emp WHERE empno=7369;
+	DBMS_OUTPUT.PUT_LINE('Name Of Employee : ' || recordf.ename);
+END;
+=============================COMPOSIT-DATA-TYPE EXAMPLE===============================================
+DECLARE
+	TYPE mytype IS RECORD(
+		name VARCHAR(20),
+		role VARCHAR(20)
+	);
+	mt mytype;
+BEGIN
+	mt.name := 'EMP1';
+	mt.role := 'MANAGER';
+	DBMS_OUTPUT.PUT_LINE("mt.name = " || mt.name);
+	DBMS_OUTPUT.PUT_LINE("mt.name = " || mt.role);
+END;
+--------------------------COMPOSIT-DATA-TYPE EXAMPLE WITH SELECT STATEMENT-----------------------------
+DECLARE
+	TYPE employee IS RECORD(
+		name VARCHAR(20),
+		role VARCHAR(20)
+	);
+	e employee;
+BEGIN
+	SELECT ename, job INTO e.name, e.role FROM emp WHERE empno=7369;
+	DBMS_OUTPUT.PUT_LINE(e.name);
+	DBMS_OUTPUT.PUT_LINE(e.role);
+END;
+=============================================REFERENCED TYPE=================================================
+DECLARE
+      e emp%ROWTYPE; 
+BEGIN
+	SELECT ename, job INTO e.ename, e.job FROM emp WHERE empno=7369;
+	DBMS_OUTPUT.PUT_LINE(e.ename);
+	DBMS_OUTPUT.PUT_LINE(e.job);
+	
+	SELECT * INTO e FROM emp WHERE empno=7369;
+	DBMS_OUTPUT.PUT_LINE(e.empno);
+	DBMS_OUTPUT.PUT_LINE(e.ename);
+	DBMS_OUTPUT.PUT_LINE(e.job);
+	DBMS_OUTPUT.PUT_LINE(e.mgr);
+	DBMS_OUTPUT.PUT_LINE(e.hiredate);
+	DBMS_OUTPUT.PUT_LINE(e.sal);
+	DBMS_OUTPUT.PUT_LINE(e.comm);
+END;
+========================================================PRAGMA EXCEPTION=========================================================
+DECLARE
+  str VARCHAR2(20) := 'fsdfasdf';
+  datvar DATE;
+
+  my_date_exception_type EXCEPTION;
+  PRAGMA EXCEPTION_INIT(my_date_exception_type, -01841);
+
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Statement before date convertion');
+  datvar := to_date(str, 'YYYY-MON-DD');
+  DBMS_OUTPUT.PUT_LINE('Statement after date convertion');
+
+EXCEPTION
+  WHEN my_date_exception_type THEN
+    DBMS_OUTPUT.PUT_LINE('String format not valid ' || str);
+    DBMS_OUTPUT.PUT_LINE('PLEASE ENTER VALID FORMAT  YYYY-MON-DD');
+END;
+===================================EXCEPTION HANDLING==============================================
+DECLARE
+	x VARCHAR(10);
+BEGIN
+	SELECT ename INTO x FROM emp WHERE empno=121;
+EXCEPTION
+	WHEN no_data_found THEN
+		DBMS_OUTPUT.PUT_LINE('No Result Set');
+	WHEN too_many_rows THEN
+		DBMS_OUTPUT.PUT_LINE('Out Of Bound Result Set');
+END;
+==================================EXCEPTION HANDLING===============================================
+DECLARE
+	x VARCHAR(10);
+BEGIN
+	SELECT ename INTO x FROM emp;
+EXCEPTION
+	WHEN no_data_found THEN
+		DBMS_OUTPUT.PUT_LINE('No Result Set');
+	WHEN too_many_rows THEN
+		DBMS_OUTPUT.PUT_LINE('Out Of Bound Result Set');
+END;
+=================================EXCEPTION HANDLING================================================
+DECLARE
+	x NUMBER(4);
+BEGIN
+	x := 'SUGNANA';
+EXCEPTION
+	WHEN value_error THEN
+		DBMS_OUTPUT.PUT_LINE('Value Error');
+END;
+===========================================================CURSOR=============================================================
+DECLARE
+	CURSOR emp_cursor IS
+		SELECT ename, job, deptno FROM emp;
+
+	name VARCHAR2(20);
+	jb VARCHAR2(10);
+	dno NUMBER(5);
+BEGIN
+	OPEN emp_cursor;
+	FETCH emp_cursor INTO name, jb, dno;
+	DBMS_OUTPUT.PUT_LINE(name || ' ' || jb || ' ' || dno);
+	FETCH emp_cursor INTO name, jb, dno;
+	DBMS_OUTPUT.PUT_LINE(name || ' ' || jb || ' ' || dno);
+
+
+END;
+=============================================CURSOR USING BASIC LOOP================================================================
+DECLARE
+  CURSOR emp_cursor IS
+  	SELECT ename, job, deptno FROM emp;
+  name VARCHAR2(20);
+  jb VARCHAR2(10);
+  dno NUMBER(5);
+BEGIN
+  OPEN emp_cursor;
+  LOOP
+    FETCH emp_cursor INTO name, jb, dno;
+    EXIT WHEN emp_cursor%NOTFOUND;
+    DBMS_OUTPUT.PUT_LINE(name || ' ' || jb || ' ' || dno);
+  END LOOP;
+  
+  IF emp_cursor%ISOPEN THEN
+    DBMS_OUTPUT.PUT_LINE('emp_cursor IS OPEN');
+  END IF;
+  CLOSE emp_cursor;
+
+  IF emp_cursor%ISOPEN THEN
+    DBMS_OUTPUT.PUT_LINE('emp_cursor IS NOT CLOSED');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('emp_cursor IS CLOSED');
+  END IF;
+END;
+=================================================CURSOR===========================================================================
+DECLARE
+  CURSOR emp_cursor IS
+  SELECT * FROM emp;
+  e emp%ROWTYPE;  
+BEGIN
+  OPEN emp_cursor;
+    FETCH emp_cursor INTO e;
+    DBMS_OUTPUT.PUT_LINE(e.ename || ' ' || e.job || ' ' || e.deptno);
+ CLOSE emp_cursor;
+END;
+==================================================================SAMPLE CURSOR========================================================================================
+DECLARE
+	CURSOR mycursor IS
+		SELECT ename,sal FROM emp;
+	x VARCHAR(20);
+	y NUMBER(10);
+BEGIN
+	OPEN mycursor;
+	LOOP
+	FETCH mycursor INTO x,y;
+		DBMS_OUTPUT.PUT_LINE('Name : ' || x);
+		DBMS_OUTPUT.PUT_LINE('Salary : ' || y);
+		EXIT WHEN mycursor%NOTFOUND;
+	END LOOP;
+END;
+================================================CURSOR======================================================================================================
+DECLARE
+	CURSOR mycursor IS
+		SELECT ename FROM emp;
+	x emp.ename%type
+BEGIN
+	OPEN mycursor;
+	LOOP
+	FETCH mycursor INTO x;
+		DBMS_OUTPUT.PUT_LINE('Name : ' || x);
+		EXIT WHEN mycursor%NOTFOUND;
+	END LOOP;
+END;
+================================================CURSOR======================================================================================================
+DECLARE
+	CURSOR mycursor IS
+		SELECT ename FROM emp;
+	x emp%ROWTYPE;
+BEGIN
+	OPEN mycursor;
+	LOOP
+	FETCH mycursor INTO x.ename,x.sal;
+		DBMS_OUTPUT.PUT_LINE('Name : ' || x.ename);
+		DBMS_OUTPUT.PUT_LINE('Salary : ' || x.sal);
+		EXIT WHEN mycursor%NOTFOUND;
+	END LOOP;
+END;
+=============================EXAMPLE PROCEDURE SIMPLE==============================================================
+CREATE OR REPLACE PROCEDURE newproc IS
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Hello World!!!!!!!!');
+END newproc;
+---------------------------CALLING SIMPLE PROCEDURE
+exec newproc
+============================EXAMPLE PROCEDURE WITH PARAMETERS======================================================
+CREATE OR REPLACE PROCEDURE newproc(str VARCHAR) IS
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('Hello World!!!!!!!!' || str);
+END newproc;
+
+=================================PACKAGE EXAMPLE-1==================================================================
+---------------------------------PACKAGE DECLARATION-----------------------------------------------------------------
+CREATE PACKAGE mypack AS
+	PROCEDURE myprocedure(str VARCHAR)
+END mypack;
+---------------------------------PACKAGE BODY CREATION------------------------------------------------------------
+CREATE OR REPLACE PACKAGE BODY mypack AS
+	PROCEDURE myprocedure(str VARCHAR) AS
+	BEGIN
+    		DBMS_OUTPUT.PUT_LINE('In mypack.myprocedure = ' || str);
+  	END myprocedure;
+END mypack;
+---------------------------------CALLING PROCEDURE IN PACKAGE-----------------------------------------------------
+exec mypack.myprocedure('Test Data');
+===============================PACKAGE EXAMPLE-2===================================================
+-------------------------------PACKAGE DECLARATION-------------------------------------------------
+CREATE PACKAGE cust_sal AS
+	PROCEDURE find_sal(c_id customers.id%type);
+END cust_sal;
+-------------------------------PACKAGE CREATION----------------------------------------------------
+CREATE OR REPLACE PACKAGE BODY cust_sal AS
+	PROCEDURE find_sal(c_id customers.id%TYPE) IS
+		c_sal customers.salary%TYPE;
+	BEGIN
+		SELECT salary INTO c_sal FROM customers WHERE id = c_id;
+		DBMS_OUTPUT.PUT_LINE('Salary: '|| c_sal);
+	END find_sal;
+END cust_sal;
+------------------------------USING PROCEDUER-IN-PACKAGE IN ANONYMOUS BLOCK-------------------------
+DECLARE
+   code customers.id%TYPE := &cc_id;
+BEGIN
+   cust_sal.find_sal(code);
+END;
+
+======================TRIGGER EXAMPLE TO REPLACE ILLEGAL DATA ENTRY===============================================
+CREATE OR REPLACE TRIGGER mytrigger 
+BEFORE INSERT ON emp
+FOR EACH ROW WHEN(new.job !='SALES MAN')
+BEGIN
+	if(:new.comm IS NOT NULL) then
+		:new.comm := NULL;
+	END IF;
+END mytrigger;
+
+--------------------------INSERT COMM VALUE EXAMPLE FOR TRIGGER--------------------------------------------------
+INSERT INTO emp(empno, ename, job, comm) VALUES(1101, 'AJAY', 'SALESMAN', 300);
+
+SELECT * FROM emp;
+
+INSERT INTO emp(empno, ename, job, comm) VALUES(1102, 'AJAY_1', 'MANAGER', 300);
+
+SELECT * FROM emp;
+
+
+==========================EXAMPLE PROCEDURE WITH "OUT" PARAMETER================================================
+CREATE OR REPLACE PROCEDURE myproc(a OUT NUMBER) AS
+BEGIN
+	DBMS_OUTPUT.PUT_LINE('In proc before modification = ' || a);
+	a := 20;
+	DBMS_OUTPUT.PUT_LINE('In proc after modification = ' || a);  
+END myproc;
+---------------------CALLING PROCEDURE WITH "OUT" PARAMETER USING ANONYMOUS BLOCK-------------------------------
+DECLARE
+  a  NUMBER;
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Befoer calling proc = ' || a);
+  MYPROC(A);
+  DBMS_OUTPUT.PUT_LINE('after calling proc = ' || a);
+END;
+========================EXAMPLE PRAGMA EXCEPTION USING FUNCTION spring2date============================================
+CREATE OR REPLACE FUNCTION string2date(str VARCHAR2) RETURN DATE IS
+  retdate DATE;
+BEGIN
+  retdate := TO_DATE(str, 'YYYY-MM-DD');
+  RETURN retdate; 
+END;
+----------------------EXAMPLE FUNCTION spring2date WITH EXCEPTION------------------------------
+CREATE OR REPLACE FUNCTION string2date(str VARCHAR2) RETURN DATE IS
+  retdate DATE;
+  not_valid_date EXCEPTION;
+  PRAGMA EXCEPTION_INIT(not_valid_date, -01841);
+BEGIN
+  retdate := TO_DATE(str, 'YYYY-MM-DD');
+  RETURN retdate; 
+
+  EXCEPTION
+    WHEN not_valid_date THEN
+      DBMS_OUTPUT.PUT_LINE('Error in date format' || str || ' VALID Format IS YYYY-MM-DD');
+      RETURN NULL;
+END;
+----------------------------EXAMPLE FUNCTION CALL spring2date---------------------------------
+SELECT string2date('2014-07-23') FROM dual;
+
+----------------------------PRAGMA EXCEPTION EXAMPLE------------------------------------------
+DECLARE
+  str VARCHAR(20) :='';
+  retdate DATE;
+  not_valid_date EXCEPTION;
+  PRAGMA EXCEPTION_INIT(not_valid_date, -01841);
+BEGIN
+  retdate := TO_DATE(str, 'YYYY-MM-DD');
+  DBMS_OUTPUT.PUT_LINE('DATE = ' || retdate);
+
+  EXCEPTION
+    WHEN not_valid_date THEN
+      DBMS_OUTPUT.PUT_LINE('Error in date format' || str || ' VALID Format IS YYYY-MM-DD');
+END;
+=====================================EXAMPLE OF VARRAY========================================
+CREATE OR REPLACE TYPE myarray AS VARRAY(10) OF VARCHAR(20);
+
+CREATE TABLE testarray(
+   slno NUMBER,
+   ary myarray
+);
+
+INSERT INTO testarray VALUES(1, myarray('ONE', 'TWO', 'THREE'));
+INSERT INTO testarray VALUES(2, myarray('FOUR', 'FIVE', 'SIX'));
+INSERT INTO testarray VALUES(3, myarray('SEVEN', 'EIGHT', 'NINE'));
+INSERT INTO testarray VALUES(4, myarray('TEN', 'ELEVEN', 'TWELVE'));
+
+----------------------------PL/SQL PROGRAM FOR ACCESSING VARRAY CONTENTS------------------
+DECLARE
+	ma myarray;
+BEGIN
+	FOR ma IN (SELECT * FROM testarray) LOOP
+		DBMS_OUTPUT.PUT_LINE('FIRST ROW');
+		FOR i IN ma.arr.FIRST.. ma.arr.LAST LOOP
+			DBMS_OUTPUT.PUT_LINE(ma.arr(i));
+		END LOOP;
+	END LOOP;
+END;
+=====================FOR-LOOP USING  ARRAY FOR SELECT MULTIPLE ROWS================================
+BEGIN
+	FOR t IN (SELECT * FROM testarray) LOOP 
+		DBMS_OUTPUT.PUT_LINE('---' || t.slno || '---');    
+		FOR i IN t.ary.first..t.ary.last LOOP
+			DBMS_OUTPUT.PUT_LINE(t.ary(i));
+		END LOOP;
+	END LOOP;
+END;
+===================================AUDIT TRIGGER EXAMPLE============================================
+-----------------------------------CREATE AUDIT TABLE-----------------------------------------------
+CREATE TABLE audit_table(
+	empno NUMBER(4),
+	old_sal NUMBER(7, 2),
+	new_sal NUMBER(7, 2),
+	usr VARCHAR(20),
+	cdate DATE
+)
+----------------------------------CREATE AUDIT TRIGGER----------------------------------------------
+CREATE OR REPLACE TRIGGER myaudit
+BEFORE UPDATE ON emp FOR EACH ROW
+BEGIN
+	IF UPDATING('sal') THEN
+		INSERT INTO audit_table VALUES(:old.empno, :old.sal, :new.sal, user, sysdate);
+	END IF; 
+END;
+---------------------------------UDATE COMMAND FOR AUDIT TRIGGER EXAMPLE-----------------------------
+UPDATE emp
+SET sal=10000
+WHERE empno=7979;
+
+=================================AUTO INCREAMENT USING SIMPLE SEQUENCE==============================================
+CREATE SEQUENCE seq_person
+MINVALUE 1
+START WITH 1
+INCREMENT BY 1
+CACHE 10;
+
+INSERT INTO person (id, frstname, lastname)
+VALUES (seq_person.nextval, 'RAMA', 'KRISHNA');
+
+
+============================AUTO INCREAMENT USING TRIGGER AND SEQUENCE=============================
+----------------------------CREATE TABLE-----------------------------------------------------------
+CREATE TABLE departments (
+	id  NUMBER(10)    NOT NULL,
+	description  VARCHAR2(50)  NOT NULL
+);
+
+ALTER TABLE departments 
+ADD (CONSTRAINT dept_pk PRIMARY KEY (ID));
+
+---------------------------CREATE SEQUENCE FOR AUTO INCREAMENT ON DEPARTMENT TABLE----------------
+CREATE SEQUENCE dept_seq;
+------------------TRIGGER FOR AUTO-INCREAMENT USING SEQUENCE FOR DEPARTMENT TABLE-----------------
+CREATE OR REPLACE TRIGGER dept_bir 
+BEFORE INSERT ON departments 
+FOR EACH ROW
+BEGIN
+	SELECT dept_seq.NEXTVAL INTO   :new.id FROM   dual;
+END;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==============================================================================================================================================================================
+==============================================================================================================================================================================
+==============================================================================================================================================================================
+==============================================================================================================================================================================
+==============================================================================================================================================================================
+==============================================================================================================================================================================
+==============================================================================================================================================================================
+==============================================================================================================================================================================
+=============================LARGEST OF TWO NUMBERS===================================
+DECLARE
+	a NUMBER(10) := 10;
+	b NUMBER(10) := 20;
+	c NUMBER(10) := 30;
+
+	lg NUMBER(10);
+	sl NUMBER(10);
+
+	t NUMBER(10);
+BEGIN
+	lg := a;
+	sl := b;
+
+	IF sl > lg THEN
+		t = lg;
+		lg = sl;
+		sl = t;
+	END IF;
+
+	IF c > sl THEN
+		t = sl;
+		sl = c;
+		c = t;
+		IF sl > lgTHEN
+			t = lg;
+			lg = sl;
+			sl = t;
+		END IF;
+	END IF;
+	DBMS_OUTPUT.PUT_LINE('First Largest = ' || lg);
+	DBMS_OUTPUT.PUT_LINE('Second Largest = ' || sl);
+END;
+====================================NUMBER IS PRIME OR NOT=================================
+DECLARE
+ 	n NUMBER(10) := 10;
+        f NUMBER(1) := 1;     ---Assume the nuber is prime 
+BEGIN
+	FOR c IN 2..n/2 LOOP
+		IF mod(n, c) = 0 THEN
+			f := 0;
+		END IF;
+	END LOOP;
+
+	IF f != 0 THEN
+		DBMS_OUTPUT.PUT_LINE('Number is PRIME ' || n);
+	ELSE
+		DBMS_OUTPUT.PUT_LINE('Number is NOT PRIME ' || n);
+	END IF;
+END;
+===============================REVERSE OF A NUMBER===================================
+DECLARE
+	n NUMBER(10) := 1234;
+	r NUMBER(10) := 0;
+	t NUMBER(10);
+        m NUMBER(10);
+BEGIN
+	t := n;
+	
+	LOOP
+		m := mod(t, 10);
+                t := t - m;
+        	t := t / 10;
+		r := (r * 10) + m;
+		EXIT WHEN t = 0;
+	END LOOP;
+
+	DBMS_OUTPUT.PUT_LINE('n = ' || n);
+	DBMS_OUTPUT.PUT_LINE('r = ' || r);
+END;

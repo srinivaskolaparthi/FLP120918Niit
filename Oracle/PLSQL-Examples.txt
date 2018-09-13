@@ -1,0 +1,294 @@
+
+1)
+
+	-- Table Based Records
+DECLARE
+   emp_rec employees%rowtype;
+BEGIN
+   SELECT * into emp_rec
+   FROM employees
+   WHERE employee_id = 103;
+   dbms_output.put_line('Employee ID: ' || emp_rec.employee_id);
+   dbms_output.put_line('Employee Name: ' || emp_rec.first_name);
+   dbms_output.put_line('Employee Salary: ' || emp_rec.salary);
+END;
+/
+
+
+2) -- Cursor Based Records
+DECLARE
+   CURSOR emp_cur is
+      SELECT employee_id, first_name, last_name 
+      FROM employees;
+   emp_rec emp_cur%rowtype;
+BEGIN
+   OPEN emp_cur;
+   LOOP
+      FETCH emp_cur into emp_rec;
+      EXIT WHEN emp_cur%notfound;
+      DBMS_OUTPUT.put_line(emp_rec.employee_id || ' ' || emp_rec.first_name);
+   END LOOP;
+END;
+/
+
+
+3)-- Record Type  like C Structures
+
+
+DECLARE
+   type books is record
+      (title varchar(50),
+       author varchar(50),
+       subject varchar(100),
+       book_id number);
+   book1 books;
+   book2 books;
+BEGIN
+   -- Book 1 specification
+   book1.title  := 'C Programming';
+   book1.author := 'Nuha Ali '; 
+   book1.subject := 'C Programming Tutorial';
+   book1.book_id := 6495407;
+   -- Book 2 specification
+   book2.title := 'Telecom Billing';
+   book2.author := 'Zara Ali';
+   book2.subject := 'Telecom Billing Tutorial';
+   book2.book_id := 6495700;
+   -- Print book 1 record
+   dbms_output.put_line('Book 1 title : '|| book1.title);
+   dbms_output.put_line('Book 1 author : '|| book1.author);
+   dbms_output.put_line('Book 1 subject : '|| book1.subject);
+   dbms_output.put_line('Book 1 book_id : ' || book1.book_id);
+   -- Print book 2 record
+   dbms_output.put_line('Book 2 title : '|| book2.title);
+   dbms_output.put_line('Book 2 author : '|| book2.author);
+   dbms_output.put_line('Book 2 subject : '|| book2.subject);
+   dbms_output.put_line('Book 2 book_id : '|| book2.book_id);
+END;
+/
+
+
+4) -- Associative arrays
+/*An index-by table (also called an associative array) is a set of key-value pairs. Each key is unique and is used to locate the corresponding value. The key can be either an integer or a string*/
+
+-- Associative Array
+DECLARE
+   TYPE salary IS TABLE OF NUMBER INDEX BY VARCHAR2(20);
+   salary_list salary;
+   name   VARCHAR2(20);
+BEGIN
+   -- adding elements to the table
+   salary_list('Rajnish')  := 62000;
+   salary_list('Minakshi')  := 75000;
+   salary_list('Martin') := 100000;
+   salary_list('James') := 78000;
+   -- printing the table
+   name := salary_list.FIRST;
+   WHILE name IS NOT null LOOP
+      dbms_output.put_line
+      ('Salary of ' || name || ' is ' || TO_CHAR(salary_list(name)));
+      name := salary_list.NEXT(name);
+   END LOOP;
+END;
+
+/
+
+5) -- Associative Array -- Cursor Based
+DECLARE
+   CURSOR c_emp is
+      select  first_name from employees;
+   TYPE c_list IS TABLE of employees.first_name%type INDEX BY binary_integer;
+   name_list c_list;
+   counter integer :=0;
+BEGIN
+   FOR n IN c_emp LOOP
+      counter := counter +1;
+      name_list(counter)  := n.first_name;
+      dbms_output.put_line('Employee('||counter|| '):'||name_list(counter));
+  END LOOP;
+END;
+/
+
+
+6)
+/*
+A nested table is like a one-dimensional array with an arbitrary number of elements. However, a nested table differs from an array in the following aspects:
+
+
+An array has a declared number of elements, but a nested table does not. The size of a nested table can increase dynamically.
+
+
+An array is always dense, i.e., it always has consecutive subscripts. A nested table is dense initially, but it can become sparse when elements are deleted from it.
+
+
+
+*/
+
+
+DECLARE
+   TYPE names_table IS TABLE OF VARCHAR2(10);
+   TYPE grades IS TABLE OF INTEGER;
+   names names_table;
+   marks grades;
+   total integer;
+BEGIN
+   names := names_table('Kavita', 'Pritam', 'Ayan', 'Rishav', 'Aziz');
+   marks:= grades(98, 97, 78, 87, 92);
+   total := names.count;
+   dbms_output.put_line('Total '|| total || ' Students');
+   FOR i IN 1 .. total LOOP
+      dbms_output.put_line('Student:'||names(i)||', Marks:' || marks(i));
+   end loop;
+END;
+/
+
+7) -- Cursor based Nested Table
+DECLARE
+   CURSOR c_emp is 
+      SELECT  first_name FROM employees;
+   TYPE c_list IS TABLE of employees.first_name%type;
+   name_list c_list := c_list();
+   counter integer :=0;
+BEGIN
+   FOR n IN c_emp LOOP
+      counter := counter +1;
+      name_list.extend;
+      name_list(counter)  := n.first_name;
+      dbms_output.put_line('Employees('||counter||'):'||name_list(counter));
+   END LOOP;
+END;
+
+
+8) -- VARRAY Example
+
+DECLARE
+   type namesarray IS VARRAY(5) OF VARCHAR2(10);
+   type grades IS VARRAY(5) OF INTEGER;
+   names namesarray;
+   marks grades;
+   total integer;
+BEGIN
+   names := namesarray('Kavita', 'Pritam', 'Ayan', 'Rishav', 'Aziz');
+   marks:= grades(98, 97, 78, 87, 92);
+   total := names.count;
+   dbms_output.put_line('Total '|| total || ' Students');
+   FOR i in 1 .. total LOOP
+      dbms_output.put_line('Student: ' || names(i) || '
+      Marks: ' || marks(i));
+   END LOOP;
+END;
+
+9) -- Cursor Based VARRAY 
+DECLARE
+   CURSOR c_emp is
+   SELECT  first_name FROM employees;
+   type c_list is varray (120) of employees.first_name%type;
+   name_list c_list := c_list();
+   counter integer :=0;
+BEGIN
+   FOR n IN c_emp LOOP
+      counter := counter + 1;
+      name_list.extend;
+      name_list(counter)  := n.first_name;
+      dbms_output.put_line('Employee ('||counter ||'):'||name_list(counter));
+   END LOOP;
+END;
+
+
+-- Exception Handling Examples
+
+
+10) 
+
+DECLARE
+   c_id employees.employee_id%type := 221;
+   c_name  employees.first_name%type;
+
+BEGIN
+   SELECT  first_name INTO  c_name
+   FROM employees
+   WHERE employee_id = c_id;
+
+   DBMS_OUTPUT.PUT_LINE ('Employee First Name: '||  c_name);
+
+EXCEPTION
+   WHEN no_data_found THEN
+      dbms_output.put_line('No such Employee!');
+   WHEN others THEN
+      dbms_output.put_line('Error!');
+END;
+/
+
+11) --User defined Exception Example
+
+DECLARE
+   c_id employees.employee_id%type := &cc_id;
+   c_name  employees.first_name%type;
+   -- user defined exception
+   ex_invalid_id  EXCEPTION;
+BEGIN
+   IF c_id <= 0 THEN
+      RAISE ex_invalid_id;
+   ELSE
+      SELECT  first_name INTO  c_name
+      FROM employees
+      WHERE employee_id = c_id;
+      DBMS_OUTPUT.PUT_LINE ('Employee Name: '||  c_name);
+   END IF;
+EXCEPTION
+   WHEN ex_invalid_id THEN
+      dbms_output.put_line('ID must be greater than zero!');
+   WHEN no_data_found THEN
+      dbms_output.put_line('No such Employee!');
+   WHEN others THEN
+      dbms_output.put_line('Error!'); 
+END;
+/
+
+12) --Creating Package
+
+CREATE or replace PACKAGE emp_sal AS
+   PROCEDURE find_sal(c_id employees.employee_id%type);
+END emp_sal;
+/
+
+
+13) --Creating Package body
+
+CREATE OR REPLACE PACKAGE BODY emp_sal AS
+   PROCEDURE find_sal(c_id employees.employee_id%TYPE) IS
+   c_sal employees.salary%TYPE;
+   BEGIN
+      SELECT salary INTO c_sal
+      FROM employees
+      WHERE employee_id = c_id;
+      dbms_output.put_line('Salary: '|| c_sal);
+   END find_sal;
+END emp_sal;
+/
+
+14) --Using Package elements
+
+DECLARE
+   code employees.employee_id%type := &cc_id;
+BEGIN
+   emp_sal.find_sal(code);
+END;
+/
+
+
+15) -- A Simple Trigger Example
+
+CREATE OR REPLACE TRIGGER display_salary_changes
+BEFORE DELETE OR INSERT OR UPDATE ON emp
+FOR EACH ROW
+WHEN (NEW.EID > 0)
+DECLARE
+   sal_diff number;
+BEGIN
+   sal_diff := :NEW.salary  - :OLD.salary;
+   dbms_output.put_line('Old salary: ' || :OLD.salary);
+   dbms_output.put_line('New salary: ' || :NEW.salary);
+   dbms_output.put_line('Salary difference: ' || sal_diff);
+END;
+
