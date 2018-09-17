@@ -1,0 +1,172 @@
+SQL> CREATE SEQUENCE idseq;
+
+Sequence created.
+
+SQL> SELECT idseq.nextval FROM dual;
+
+   NEXTVAL                                                                      
+----------                                                                      
+         1                                                                      
+
+SQL> SELECT idseq.nextval FROM dual;
+
+   NEXTVAL                                                                      
+----------                                                                      
+         2                                                                      
+
+SQL> SELECT idseq.nextval FROM dual;
+
+   NEXTVAL                                                                      
+----------                                                                      
+         3                                                                      
+
+SQL> SELECT idseq.currval FROM dual;
+
+   CURRVAL                                                                      
+----------                                                                      
+         3                                                                      
+
+SQL> CREATE TABLE dept_details as select * from dept WHERE 1=2;
+
+Table created.
+
+SQL> INSE
+SP2-0042: unknown command "INSE" - rest of line ignored.
+SQL> INSERT INTO dept_details VALUES(1,'training','chennai');
+
+1 row created.
+
+SQL> INSERT INTO dept_details VALUES(idseq.nextval,'admin','pune');
+
+1 row created.
+
+SQL> SELECT * FROM dept;
+
+    DEPTNO DNAME          LOC                                                   
+---------- -------------- -------------                                         
+        14 Test           CHN                                                   
+        22 HR             CHN                                                   
+       778 nb             gj                                                    
+        45 gh             hh                                                    
+        10 ACCOUNTING     NEWYORK                                               
+        20 RESEARCH       DALLAS                                                
+        30 SALES          CHICAGO                                               
+        40 OPERATIONS     BOSTON                                                
+        33 dd             dd                                                    
+        83 ee                                                                   
+        84 ee                                                                   
+
+    DEPTNO DNAME          LOC                                                   
+---------- -------------- -------------                                         
+        77 tt             uu                                                    
+        66 ee             gg                                                    
+        12 s              r                                                     
+         1 ee             ff                                                    
+         2 sdf            fsd                                                   
+
+16 rows selected.
+
+SQL> SELECT * FROM dept_details;
+
+    DEPTNO DNAME          LOC                                                   
+---------- -------------- -------------                                         
+         1 training       chennai                                               
+         4 admin          pune                                                  
+
+SQL> SELECT idseq.nextval FROM dual;
+
+   NEXTVAL                                                                      
+----------                                                                      
+         5                                                                      
+
+SQL> INSERT INTO dept_details VALUES(idseq.nextval,'admin','pune');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> INSERT INTO emp_22 VALUES(idseq.nextval,'admin');
+
+1 row created.
+
+SQL> INSERT INTO dept_details VALUES(idseq.nextval,'admin','pune');
+
+1 row created.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> DROP sequence idseq;
+
+Sequence dropped.
+
+SQL> CREATE SEQUENCE idseq
+  2  	INCREMENT BY 5
+  3  	START wITH 2000
+  4  	MAXVALUE 2020
+  5  	NOCYCLE;
+
+Sequence created.
+
+SQL> INSERT INTO dept_details VALUES(idseq.nextval,'admin','pune');
+
+1 row created.
+
+SQL> INSERT INTO dept_details VALUES(idseq.nextval,'admin','pune');
+
+1 row created.
+
+SQL> INSERT INTO dept_details VALUES(idseq.nextval,'admin','pune');
+
+1 row created.
+
+SQL> INSERT INTO dept_details VALUES(idseq.nextval,'admin','pune');
+
+1 row created.
+
+SQL> INSERT INTO dept_details VALUES(idseq.nextval,'admin','pune');
+
+1 row created.
+
+SQL> INSERT INTO dept_details VALUES(idseq.nextval,'admin','pune');
+INSERT INTO dept_details VALUES(idseq.nextval,'admin','pune')
+*
+ERROR at line 1:
+ORA-08004: sequence IDSEQ.NEXTVAL exceeds MAXVALUE and cannot be instantiated 
+
+
+SQL> ALTER SEQUENCE idseq
+  2  	MAXVALUE 2050
+  3  ;
+
+Sequence altered.
+
+SQL> INSERT INTO dept_details VALUES(idseq.nextval,'admin','pune');
+
+1 row created.
+
+SQL> drop sequence idseq;
+
+Sequence dropped.
+
+SQL> SELECT * FROM dept_details;
+
+    DEPTNO DNAME          LOC                                                   
+---------- -------------- -------------                                         
+         1 training       chennai                                               
+         4 admin          pune                                                  
+         6 admin          pune                                                  
+         8 admin          pune                                                  
+      2000 admin          pune                                                  
+      2005 admin          pune                                                  
+      2010 admin          pune                                                  
+      2015 admin          pune                                                  
+      2020 admin          pune                                                  
+      2025 admin          pune                                                  
+
+10 rows selected.
+
+SQL> spool off

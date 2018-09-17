@@ -1,0 +1,57 @@
+
+SQL> SELECT ename FROM employee;
+
+ENAME
+----------
+Test
+king
+blake
+clark
+allen
+ward
+jones
+martin
+scott
+
+9 rows selected.
+
+SQL> SELECT ename FROM username.employee;
+
+ENAME
+----------
+Test
+king
+blake
+clark
+allen
+ward
+jones
+martin
+scott
+
+9 rows selected.
+
+SQL> CREATE SYNONYM emp FOR employee;
+
+Synonym created.
+
+SQL> SELECT ename FROM emp WHERE deptno=10;
+
+ENAME
+----------
+king
+blake
+clark
+
+SQL>SQL> DROP SYNONYM emp;
+
+Synonym dropped.
+
+
+SQL> CREATE PUBLIC SYNONYM test FOR employee;
+
+Synonym created.
+
+SQL> DROP PUBLIC SYNONYM test;
+
+Synonym dropped.

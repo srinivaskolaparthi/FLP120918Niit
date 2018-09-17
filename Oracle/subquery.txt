@@ -1,0 +1,411 @@
+SQL> SELECT design_code FROM designation_masters WHERE design_name='Professor';
+
+DESIGN_CODE
+-----------
+        102
+
+SQL> SELECT staff_name FROM staff_masters
+  2     WHERE design_code=(SELECT design_code FROM designation_masters
+  3             WHERE design_name='Professor');
+
+STAFF_NAME
+------------------------------
+Arvind
+Mohan
+Anil
+Raviraj
+Rahul
+Shyam
+
+6 rows selected.
+SQL> CREATE TABLE emp_copy31 AS SELECT * FROM employee;
+
+Table created.
+
+SQL> SELECT ename FROM employee;
+
+ENAME                                                                           
+----------                                                                      
+Test                                                                            
+king                                                                            
+blake                                                                           
+clark                                                                           
+allen                                                                           
+ward                                                                            
+jones                                                                           
+martin                                                                          
+scott                                                                           
+
+9 rows selected.
+
+SQL> SELECT ename FROM emp_copy31;
+
+ENAME                                                                           
+----------                                                                      
+Test                                                                            
+king                                                                            
+blake                                                                           
+clark                                                                           
+allen                                                                           
+ward                                                                            
+jones                                                                           
+martin                                                                          
+scott                                                                           
+
+9 rows selected.
+
+SQL> CREATE TABLE design_copy AS SELECT * FROM designation_masters WHERE 1=2;
+
+Table created.
+
+SQL> SELECT count(*) FROM designation_masters;
+
+  COUNT(*)                                                                      
+----------                                                                      
+         6                                                                      
+
+SQL> SELECT count(*) FROM design_copy;
+
+  COUNT(*)                                                                      
+----------                                                                      
+         0                                                                      
+
+SQL> desc designation_masters;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DESIGN_CODE                               NOT NULL NUMBER(3)
+ DESIGN_NAME                                        VARCHAR2(50)
+
+SQL> desc design_copy;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DESIGN_CODE                                        NUMBER(3)
+ DESIGN_NAME                                        VARCHAR2(50)
+
+SQL> SELECT deptno, avg(sal) FROM employee GROUP BY deptno;
+
+    DEPTNO   AVG(SAL)                                                           
+---------- ----------                                                           
+                 5000                                                           
+        30 1366.66667                                                           
+        20     2987.5                                                           
+        10 3466.66667                                                           
+
+SQL> SELECT deptno, avg(sal) FROM employee GROUP BY deptno HAVING AVG(sal)>2500;
+
+    DEPTNO   AVG(SAL)                                                           
+---------- ----------                                                           
+                 5000                                                           
+        20     2987.5                                                           
+        10 3466.66667                                                           
+
+SQL> SELECT deptno FROM employee GROUP BY deptno HAVING AVG(sal)>2500;
+
+    DEPTNO                                                                      
+----------                                                                      
+                                                                                
+        20                                                                      
+        10                                                                      
+
+SQL> SELECT ename,deptno FROM employee WHERE deptno IN
+  2  	(SELECT deptno FROM employee GROUP BY deptno HAVING AVG(sal)>2500);
+
+ENAME          DEPTNO                                                           
+---------- ----------                                                           
+scott              20                                                           
+jones              20                                                           
+clark              10                                                           
+blake              10                                                           
+king               10                                                           
+
+SQL> SELECT ename,deptno FROM employee WHERE deptno NOT IN
+  2  	(SELECT deptno FROM employee GROUP BY deptno HAVING AVG(sal)>2500);
+
+no rows selected
+
+SQL> SELECT ename,deptno FROM employee;
+
+ENAME          DEPTNO                                                           
+---------- ----------                                                           
+Test                                                                            
+king               10                                                           
+blake              10                                                           
+clark              10                                                           
+allen              30                                                           
+ward               30                                                           
+jones              20                                                           
+martin             30                                                           
+scott              20                                                           
+
+9 rows selected.
+
+SQL> DELETE FROM employee WHERE ename='Test';
+
+1 row deleted.
+
+SQL> SELECT ename,deptno FROM employee WHERE deptno NOT IN
+  2  	(SELECT deptno FROM employee GROUP BY deptno HAVING AVG(sal)>2500);
+
+ENAME          DEPTNO                                                           
+---------- ----------                                                           
+martin             30                                                           
+ward               30                                                           
+allen              30                                                           
+
+SQL> SELECT ename,deptno FROM employee WHERE sal>ANY
+  2  	(SELECT avg(sal) FROM employee);
+
+ENAME          DEPTNO                                                           
+---------- ----------                                                           
+king               10                                                           
+blake              10                                                           
+jones              20                                                           
+scott              20                                                           
+
+SQL> SELECT ename,deptno FROM employee WHERE sal>ANY
+  2  	(SELECT avg(sal) FROM employee group by job);
+
+ENAME          DEPTNO                                                           
+---------- ----------                                                           
+king               10                                                           
+scott              20                                                           
+jones              20                                                           
+blake              10                                                           
+clark              10                                                           
+allen              30                                                           
+
+6 rows selected.
+
+SQL> SELECT avg(sal) FROM employee group by job;
+
+  AVG(SAL)                                                                      
+----------                                                                      
+1366.66667                                                                      
+      5100                                                                      
+2758.33333                                                                      
+      3000                                                                      
+
+SQL> SELECT job,avg(sal) FROM employee group by job;
+
+JOB                                                  AVG(SAL)                   
+-------------------------------------------------- ----------                   
+salesman                                           1366.66667                   
+president                                                5100                   
+manager                                            2758.33333                   
+analyst                                                  3000                   
+
+SQL> SELECT ename,sal,job FROM employee WHERE sal>ANY
+  2  	(SELECT avg(sal) FROM employee group by job);
+
+ENAME             SAL JOB                                                       
+---------- ---------- --------------------------------------------------        
+king             5100 president                                                 
+scott            3000 analyst                                                   
+jones            2975 manager                                                   
+blake            2850 manager                                                   
+clark            2450 manager                                                   
+allen            1600 salesman                                                  
+
+6 rows selected.
+
+SQL> SELECT ename,deptno FROM employee WHERE sal>ALL
+  2  	(SELECT avg(sal) FROM employee group by job);
+
+no rows selected
+
+SQL> SELECT job,min(sal) FROM employee group by job;
+
+JOB                                                  MIN(SAL)                   
+-------------------------------------------------- ----------                   
+salesman                                                 1250                   
+president                                                5100                   
+manager                                                  2450                   
+analyst                                                  3000                   
+
+SQL> SELECT deptno,min(sal) FROM employee group by deptno;
+
+    DEPTNO   MIN(SAL)                                                           
+---------- ----------                                                           
+        30       1250                                                           
+        20       2975                                                           
+        10       2450                                                           
+
+SQL> SELECT ename,deptno FROM employee WHERE sal>ALL
+  2  	(SELECT avg(sal) FROM employee group by deptno);
+
+ENAME          DEPTNO                                                           
+---------- ----------                                                           
+king               10                                                           
+  1  SELECT ename,sal,job FROM employee WHERE sal>ANY
+  2*    (SELECT avg(sal) FROM employee group by job )
+SQL> /
+
+ENAME             SAL JOB
+---------- ---------- --------------------------------------------------
+king             5100 president
+scott            3000 analyst
+jones            2975 manager
+blake            2850 manager
+clark            2450 manager
+allen            1600 salesman
+
+6 rows selected.
+
+SQL> SELECT avg(sal) FROM employee group by job;
+
+  AVG(SAL)
+----------
+1366.66667
+      5100
+2758.33333
+      3000
+
+SQL> SELECT job, avg(sal) FROM employee group by job;
+
+JOB                                                  AVG(SAL)
+-------------------------------------------------- ----------
+salesman                                           1366.66667
+president                                                5100
+manager                                            2758.33333
+analyst                                                  3000
+
+SQL> SELECT ename,sal,job FROM employee e WHERE sal>ALL
+  2     (SELECT avg(sal) FROM employee e1 WHERE e.job=e1.job group by job );
+
+ENAME             SAL JOB
+---------- ---------- --------------------------------------------------
+blake            2850 manager
+allen            1600 salesman
+jones            2975 manager
+
+SQL> SELECT ename FROM employee CONNECT BY empno=mgr;
+
+ENAME
+----------
+king
+blake
+clark
+allen
+ward
+jones
+martin
+scott
+
+8 rows selected.
+
+SQL> SELECT ename FROM employee CONNECT BY empno=mgr START WITH ename='allen';
+SELECT ename FROM employee CONNECT BY empno=mgr START WITH ename='allen';
+                                                                        *
+ERROR at line 1:
+ORA-00911: invalid character
+
+
+SQL> SELECT ename FROM employee CONNECT BY empno=mgr START WITH ename='allen';
+
+ENAME
+----------
+allen
+
+SQL> SELECT ename FROM employee CONNECT BY prior empno=mgr START WITH ename='a
+en';
+
+ENAME
+----------
+allen
+
+SQL> SELECT ename FROM employee CONNECT BY prior empno=mgr START WITH ename='b
+ke';
+
+ENAME
+----------
+blake
+allen
+ward
+martin
+
+SQL> SELECT ename,mgr FROM employee;
+
+ENAME             MGR
+---------- ----------
+king
+blake            7839
+clark            7839
+allen            7698
+ward             7698
+jones            7839
+martin           7698
+scott            7566
+
+8 rows selected.
+
+SQL> SELECT empno,ename,mgr FROM employee;
+
+     EMPNO ENAME             MGR
+---------- ---------- ----------
+      7839 king
+      7698 blake            7839
+      7782 clark            7839
+      7499 allen            7698
+      7521 ward             7698
+      7566 jones            7839
+      7654 martin           7698
+      7788 scott            7566
+
+8 rows selected.
+
+SQL> SELECT ename,empno FROM employee CONNECT BY prior empno=mgr;
+
+ENAME           EMPNO
+---------- ----------
+scott            7788
+allen            7499
+martin           7654
+ward             7521
+blake            7698
+allen            7499
+martin           7654
+ward             7521
+jones            7566
+scott            7788
+clark            7782
+
+ENAME           EMPNO
+---------- ----------
+king             7839
+blake            7698
+allen            7499
+martin           7654
+ward             7521
+jones            7566
+scott            7788
+clark            7782
+
+19 rows selected.
+
+SQL> SELECT ename,empno FROM employee CONNECT BY prior empno=mgr
+  2     START WITH ename='blake';
+
+ENAME           EMPNO
+---------- ----------
+blake            7698
+allen            7499
+ward             7521
+martin           7654
+
+SQL> SELECT ename,empno FROM employee CONNECT BY empno=mgr
+  2     START WITH ename='blake';
+
+ENAME           EMPNO
+---------- ----------
+blake            7698
+
+SQL> SELECT ename,sal,job FROM employee WHERE sal=
+  2  (SELECT avg(sal) FROM employee group by job);
+(SELECT avg(sal) FROM employee group by job)
+ *
+ERROR at line 2:
+ORA-01427: single-row subquery returns more than one row
+
+
+SQL>
+SQL> spool off

@@ -1,0 +1,127 @@
+
+SQL> CREATE TABLE courses(courseid NUMBER PRIMARY KEY,name VARCAHR2(20));
+CREATE TABLE courses(courseid NUMBER PRIMARY KEY,name VARCAHR2(20))
+                                                              *
+ERROR at line 1:
+ORA-00907: missing right parenthesis
+
+
+SQL> CREATE TABLE courses(courseid NUMBER PRIMARY KEY,name VARCHAR2(20));
+
+Table created.
+
+SQL> DROP TABLE courses;
+
+Table dropped.
+
+SQL> CREATE TABLE courses(courseid NUMBER,name VARCHAR2(20),
+  2     CONSTRAINT cid_pk PRIMARY KEY(courseid));
+
+Table created.
+
+SQL> desc courses
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+
+ COURSEID                                  NOT NULL NUMBER
+ NAME                                               VARCHAR2(20)
+
+SQL> ALTER TABLE courses DROP CONSTRAINT cid_pk;
+
+Table altered.
+
+SQL> desc courses
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+
+ COURSEID                                           NUMBER
+ NAME                                               VARCHAR2(20)
+
+SQL>
+
+SQL> CREATE TABLE courses(courseid NUMBER,name VARCHAR2(20),
+  2     CONSTRAINT cid_pk PRIMARY KEY(courseid));
+
+Table created.
+
+SQL> desc courses
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------
+
+ COURSEID                                  NOT NULL NUMBER
+ NAME                                               VARCHAR2(20)
+
+SQL> ALTER TABLE courses DISABLE CONSTRAINT cid_pk;
+
+Table altered.
+
+SQL> desc courses
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------
+
+ COURSEID                                           NUMBER
+ NAME                                               VARCHAR2(20)
+
+SQL> ALTER TABLE courses ENABLE CONSTRAINT cid_pk;
+
+Table altered.
+
+SQL> desc courses
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------
+
+ COURSEID                                  NOT NULL NUMBER
+ NAME                                               VARCHAR2(20)
+
+SQL> INSERT INTO courses VALUES(1,'JSP');
+
+1 row created.
+
+SQL> INSERT INTO courses VALUES(1,'JS');
+INSERT INTO courses VALUES(1,'JS')
+*
+ERROR at line 1:
+ORA-00001: unique constraint (RATHNA.CID_PK) violated
+
+
+SQL> ALTER TABLE courses DISABLE CONSTRAINT cid_pk;
+
+Table altered.
+
+SQL> INSERT INTO courses VALUES(1,'JS');
+
+1 row created.
+
+SQL> ALTER TABLE courses ENABLE CONSTRAINT cid_pk;
+ALTER TABLE courses ENABLE CONSTRAINT cid_pk
+*
+ERROR at line 1:
+ORA-02437: cannot validate (RATHNA.CID_PK) - primary key violated
+
+
+SQL> TRUNCATE TABLE courses;
+
+Table truncated.
+
+SQL> ALTER TABLE courses ENABLE CONSTRAINT cid_pk;
+
+Table altered.
+
+SQL> DROP TABLE courses;
+
+Table dropped.
+
+SQL> CREATE TABLE courses(courseid NUMBER,name VARCHAR2(20));
+
+Table created.
+
+SQL> ALTER TABLE courses  CONSTRAINT cid_pk;
+ALTER TABLE courses  CONSTRAINT cid_pk
+                     *
+ERROR at line 1:
+ORA-01735: invalid ALTER TABLE option
+
+
+SQL> ALTER TABLE courses ADD CONSTRAINT cid_pk PRIMARY KEY(courseid);
+
+Table altered.

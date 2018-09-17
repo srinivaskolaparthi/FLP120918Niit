@@ -1,0 +1,506 @@
+SQL> desc emp;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ID                                        NOT NULL NUMBER
+ SAL                                                NUMBER
+ JOB                                                VARCHAR2(20)
+
+SQL> alter table emp rename to emp_22;
+
+Table altered.
+
+SQL> desc emp
+ERROR:
+ORA-04043: object emp does not exist 
+
+
+SQL> desc emp_22;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ID                                        NOT NULL NUMBER
+ SAL                                                NUMBER
+ JOB                                                VARCHAR2(20)
+
+SQL> alter table emp rename column id to empno;
+alter table emp rename column id to empno
+*
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> alter table emp_22 rename column id to empno;
+
+Table altered.
+
+SQL> desc emp_22
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMPNO                                     NOT NULL NUMBER
+ SAL                                                NUMBER
+ JOB                                                VARCHAR2(20)
+
+
+
+SQL> ALTER TABLE EMP_22 SET UNUSED COLUMN sal;
+
+Table altered.
+
+SQL> desc emp_22
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMPNO                                     NOT NULL NUMBER
+ JOB                                                VARCHAR2(20)
+
+SQL> ALTER TABLE EMP_22 DROP UNUSED COLUMNS
+  2  ;
+
+Table altered.
+
+SQL> desc emp_22;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMPNO                                     NOT NULL NUMBER
+ JOB                                                VARCHAR2(20)
+
+SQL> INSERT INTO EMP_22 VALUES(9898,'TL');
+
+1 row created.
+
+SQL> INSERT INTO EMP_22(empno) VALUES(9896);
+
+1 row created.
+
+SQL> desc dept;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ DEPTNO                                    NOT NULL NUMBER(4)
+ DNAME                                              VARCHAR2(14)
+ LOC                                                VARCHAR2(13)
+
+SQL> INSERT INTO dept VALUES(33,'dd','dd');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO dept(deptno,dname) VALUES(83,'ee');
+
+1 row created.
+
+SQL> INSERT INTO dept(dname,deptno) VALUES('ee',83);
+INSERT INTO dept(dname,deptno) VALUES('ee',83)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (RATHNA.SYS_C0079562) violated 
+
+
+SQL> INSERT INTO dept(dname,deptno) VALUES('ee',84);
+
+1 row created.
+
+SQL> INSERT INTO dept(dname,deptno) VALUES(85,'ee');
+INSERT INTO dept(dname,deptno) VALUES(85,'ee')
+                                         *
+ERROR at line 1:
+ORA-01722: invalid number 
+
+
+SQL> CREATE TABLE dept_c as SELECT * FROM dept WHERE 1=2;
+
+Table created.
+
+SQL> INSERT INTO dept_c SELECT * FROM dept;
+
+14 rows created.
+
+SQL> INSERT INTO dept VALUES(&num,'&name','&loc') ;
+Enter value for num: 77
+Enter value for name: tt
+Enter value for loc: uu
+old   1: INSERT INTO dept VALUES(&num,'&name','&loc') 
+new   1: INSERT INTO dept VALUES(77,'tt','uu') 
+
+1 row created.
+
+SQL> /
+Enter value for num: 66
+Enter value for name: ee
+Enter value for loc: gg
+old   1: INSERT INTO dept VALUES(&num,'&name','&loc') 
+new   1: INSERT INTO dept VALUES(66,'ee','gg') 
+
+1 row created.
+
+SQL> SELECT ename FROM employee WHERE deptno=&no;
+Enter value for no: 10
+old   1: SELECT ename FROM employee WHERE deptno=&no
+new   1: SELECT ename FROM employee WHERE deptno=10
+
+ENAME                                                                           
+----------                                                                      
+king                                                                            
+blake                                                                           
+clark                                                                           
+
+SQL> /
+Enter value for no: 20
+old   1: SELECT ename FROM employee WHERE deptno=&no
+new   1: SELECT ename FROM employee WHERE deptno=20
+
+ENAME                                                                           
+----------                                                                      
+jones                                                                           
+scott                                                                           
+
+SQL> /
+Enter value for no: 30
+old   1: SELECT ename FROM employee WHERE deptno=&no
+new   1: SELECT ename FROM employee WHERE deptno=30
+
+ENAME                                                                           
+----------                                                                      
+allen                                                                           
+ward                                                                            
+martin                                                                          
+
+SQL> DELETE FROM dept_c;
+
+14 rows deleted.
+
+SQL> TRUNCATE TABLE dept_c;
+
+Table truncated.
+
+SQL> DELETE FROM dept WHERE deptno=50;
+
+0 rows deleted.
+
+SQL> UPDATE employee SET sal=4000;
+
+9 rows updated.
+
+SQL> SELECT ename,sal FROM employee;
+
+ENAME             SAL                                                           
+---------- ----------                                                           
+Test             4000                                                           
+king             4000                                                           
+blake            4000                                                           
+clark            4000                                                           
+allen            4000                                                           
+ward             4000                                                           
+jones            4000                                                           
+martin           4000                                                           
+scott            4000                                                           
+
+9 rows selected.
+
+SQL> rollback;
+
+Rollback complete.
+
+SQL> SELECT ename,sal FROM employee;
+
+ENAME             SAL                                                           
+---------- ----------                                                           
+Test             5000                                                           
+king             5100                                                           
+blake            2850                                                           
+clark            2450                                                           
+allen            1600                                                           
+ward             1250                                                           
+jones            2975                                                           
+martin           1250                                                           
+scott            3000                                                           
+
+9 rows selected.
+
+SQL> UPDATE employee SET sal=sal+300,comm=comm+100;
+
+9 rows updated.
+
+SQL> SELECT ename,sal FROM employee;
+
+ENAME             SAL                                                           
+---------- ----------                                                           
+Test             5300                                                           
+king             5400                                                           
+blake            3150                                                           
+clark            2750                                                           
+allen            1900                                                           
+ward             1550                                                           
+jones            3275                                                           
+martin           1550                                                           
+scott            3300                                                           
+
+9 rows selected.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> rollback;
+
+Rollback complete.
+
+SQL> SELECT ename,sal FROM employee;
+
+ENAME             SAL                                                           
+---------- ----------                                                           
+Test             5300                                                           
+king             5400                                                           
+blake            3150                                                           
+clark            2750                                                           
+allen            1900                                                           
+ward             1550                                                           
+jones            3275                                                           
+martin           1550                                                           
+scott            3300                                                           
+
+9 rows selected.
+
+SQL> SELECT max(sal) FROM employee WHERE deptno=10;
+
+  MAX(SAL)                                                                      
+----------                                                                      
+      5400                                                                      
+
+SQL> UPDATE employee SET sal=
+  2  	(SELECT max(sal) FROM employee WHERE deptno=10)
+  3  	WHERE deptno=10;
+
+3 rows updated.
+
+SQL> SELECT ename,sal FROM employee WHERE deptno=10;
+
+ENAME             SAL                                                           
+---------- ----------                                                           
+king             5400                                                           
+blake            5400                                                           
+clark            5400                                                           
+
+SQL> UPDATE employee SET comm=&c;
+Enter value for c: 200
+old   1: UPDATE employee SET comm=&c
+new   1: UPDATE employee SET comm=200
+
+9 rows updated.
+
+SQL> CREATE TABLE emp_10 AS SELECT empno,ename,sal FROM employee WHERE deptno=10;
+
+Table created.
+
+SQL> CREATE TABLE emps AS SELECT empno,ename,sal FROM employee;
+
+Table created.
+
+SQL> SELECT count(*) FROM emp_10;
+
+  COUNT(*)                                                                      
+----------                                                                      
+         3                                                                      
+
+SQL> SELECT count(*) FROM emps;
+
+  COUNT(*)                                                                      
+----------                                                                      
+         9                                                                      
+
+
+SQL> desc emp_22;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ EMPNO                                     NOT NULL NUMBER
+ JOB                                                VARCHAR2(20)
+
+SQL> SELECT count(*) FROM emp_22;
+
+  COUNT(*)                                                                      
+----------                                                                      
+        14                                                                      
+
+SQL> INSERT INTO emp_22 VALUES(88,'ff');
+
+1 row created.
+
+SQL> INSERT INTO emp_22 VALUES(89,'ff');
+
+1 row created.
+
+SQL> CREATE TABLE ee AS SELECT * FROM dept;
+
+Table created.
+
+SQL> SELECT count(*) FROM emp_22;
+
+  COUNT(*)                                                                      
+----------                                                                      
+        16                                                                      
+
+SQL> rollback;
+
+Rollback complete.
+
+SQL> SELECT count(*) FROM emp_22;
+
+  COUNT(*)                                                                      
+----------                                                                      
+        16                                                                      
+
+SQL> INSERT INTO emp_22 VALUES(75,'ff');
+
+1 row created.
+
+SQL> INSERT INTO emp_22 VALUES(76,'ff');
+
+1 row created.
+
+SQL> SAVEPOINT a;
+
+Savepoint created.
+
+SQL> INSERT INTO emp_22 VALUES(77,'ff');
+
+1 row created.
+
+SQL> INSERT INTO emp_22 VALUES(78,'ff');
+
+1 row created.
+
+SQL> SAVEPOINT b;
+
+Savepoint created.
+
+SQL> INSERT INTO emp_22 VALUES(79,'ff');
+
+1 row created.
+
+SQL> SELECT * FROM emp_22;
+
+     EMPNO JOB                                                                  
+---------- --------------------                                                 
+         1 SE                                                                   
+         2 SE                                                                   
+         3 SE                                                                   
+         4 SE                                                                   
+       112 TL                                                                   
+       101 SSE                                                                  
+       102 ASE                                                                  
+       103 SSE                                                                  
+       104 Mgr                                                                  
+       105 Assistant                                                            
+       111 SE                                                                   
+
+     EMPNO JOB                                                                  
+---------- --------------------                                                 
+       211 ff                                                                   
+      9898 TL                                                                   
+      9896                                                                      
+        88 ff                                                                   
+        89 ff                                                                   
+        75 ff                                                                   
+        76 ff                                                                   
+        77 ff                                                                   
+        78 ff                                                                   
+        79 ff                                                                   
+
+21 rows selected.
+
+SQL> rollback to b;
+
+Rollback complete.
+
+SQL> SELECT * FROM emp_22;
+
+     EMPNO JOB                                                                  
+---------- --------------------                                                 
+         1 SE                                                                   
+         2 SE                                                                   
+         3 SE                                                                   
+         4 SE                                                                   
+       112 TL                                                                   
+       101 SSE                                                                  
+       102 ASE                                                                  
+       103 SSE                                                                  
+       104 Mgr                                                                  
+       105 Assistant                                                            
+       111 SE                                                                   
+
+     EMPNO JOB                                                                  
+---------- --------------------                                                 
+       211 ff                                                                   
+      9898 TL                                                                   
+      9896                                                                      
+        88 ff                                                                   
+        89 ff                                                                   
+        75 ff                                                                   
+        76 ff                                                                   
+        77 ff                                                                   
+        78 ff                                                                   
+
+20 rows selected.
+
+SQL> rollback to a;
+
+Rollback complete.
+
+SQL> SELECT * FROM emp_22;
+
+     EMPNO JOB                                                                  
+---------- --------------------                                                 
+         1 SE                                                                   
+         2 SE                                                                   
+         3 SE                                                                   
+         4 SE                                                                   
+       112 TL                                                                   
+       101 SSE                                                                  
+       102 ASE                                                                  
+       103 SSE                                                                  
+       104 Mgr                                                                  
+       105 Assistant                                                            
+       111 SE                                                                   
+
+     EMPNO JOB                                                                  
+---------- --------------------                                                 
+       211 ff                                                                   
+      9898 TL                                                                   
+      9896                                                                      
+        88 ff                                                                   
+        89 ff                                                                   
+        75 ff                                                                   
+        76 ff                                                                   
+
+18 rows selected.
+
+SQL> commit;
+
+Commit complete.
+
+SQL> SELECT * FROM emp_22;
+
+     EMPNO JOB                                                                  
+---------- --------------------                                                 
+         1 SE                                                                   
+         2 SE                                                                   
+         3 SE                                                                   
+         4 SE                                                                   
+       112 TL                                                                   
+       101 SSE                                                                  
+       102 ASE                                                                  
+       103 SSE                                                                  
+       104 Mgr                                                                  
+       105 Assistant                                                            
+       111 SE                                                                   
+
+     EMPNO JOB                                                                  
+---------- --------------------                                                 
+       211 ff                                                                   
+      9898 TL                                                                   
+      9896                                                                      
+        88 ff                                                                   
+        89 ff                                                                   
+        75 ff                                                                   
+        76 ff                                                                   
+
+18 rows selected.
+
+SQL> spool off

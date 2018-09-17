@@ -1,0 +1,104 @@
+SQL> CREATE TABLE students
+  2  	(studentid NUMBER UNIQUE KEY,
+  3  	 name VARCHAR2(20) NOT NULL,
+  4  	 doj DATE default SYSDATE,
+  5      courseid NUMBER,
+  6  	 CONSTRAINT cid_FK FOREIGN KEY(courseid) references courses(courseid));
+	(studentid NUMBER UNIQUE KEY,
+	                         *
+ERROR at line 2:
+ORA-00907: missing right parenthesis 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  CREATE TABLE students
+  2  	(studentid NUMBER UNIQUEKEY,
+  3  	 name VARCHAR2(20) NOT NULL,
+  4  	 doj DATE default SYSDATE,
+  5      courseid NUMBER,
+  6* 	 CONSTRAINT cid_FK FOREIGN KEY(courseid) references courses(courseid))
+SQL> /
+	(studentid NUMBER UNIQUEKEY,
+	                  *
+ERROR at line 2:
+ORA-00907: missing right parenthesis 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  CREATE TABLE students
+  2  	(studentid NUMBER UNIQUE,
+  3  	 name VARCHAR2(20) NOT NULL,
+  4  	 doj DATE default SYSDATE,
+  5      courseid NUMBER,
+  6* 	 CONSTRAINT cid_FK FOREIGN KEY(courseid) references courses(courseid))
+SQL> /
+
+Table created.
+
+SQL> DROP TABLE students
+  2  ;
+
+Table dropped.
+
+SQL> CREATE TABLE students
+  2  	(studentid NUMBER UNIQUE,
+  3  	 name VARCHAR2(20) NOT NULL,
+  4  	 doj DATE default SYSDATE,
+  5      courseid NUMBER,
+  6  	 age NUMBER,
+  7  	 CONSTRAINT cid_FK FOREIGN KEY(courseid) references courses(courseid));
+
+Table created.
+
+SQL> drop table students;
+
+Table dropped.
+
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1   CREATE TABLE students
+  2      (studentid NUMBER UNIQUE,
+  3       name VARCHAR2(20) NOT NULL,
+  4       doj DATE default SYSDATE,
+  5       courseid NUMBER,
+  6       age NUMBER,
+  7       CONSTRAINT cid_FK FOREIGN KEY(courseid) references courses(courseid),
+  8* 	 CONSTRAINT age_ck CHECK(age>17))
+SQL> /
+
+Table created.
+
+
+
+SQL> ALTER TABLE students ADD(address vARCHAR2(20));
+
+Table altered.
+
+SQL> ALTER TABLE students MODIFY(address vARCHAR2(22));
+
+Table altered.
+
+
+
+SQL> desc students
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ STUDENTID                                          NUMBER
+ NAME                                      NOT NULL VARCHAR2(20)
+ DOJ                                                DATE
+ COURSEID                                           NUMBER
+ AGE                                                NUMBER
+ ADDRESS                                            VARCHAR2(22)
+
+SQL> aLTER tABLE students DROP COLUMN address;
+
+Table altered.
+
+SQL> spool off

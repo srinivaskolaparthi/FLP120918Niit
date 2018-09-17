@@ -1,0 +1,228 @@
+
+SQL> CREATE INDEX job_index ON employee(job);
+
+Index created.
+
+SQL> desc USER_INDEXES;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+
+ INDEX_NAME                                NOT NULL VARCHAR2(30)
+ INDEX_TYPE                                         VARCHAR2(27)
+ TABLE_OWNER                               NOT NULL VARCHAR2(30)
+ TABLE_NAME                                NOT NULL VARCHAR2(30)
+ TABLE_TYPE                                         VARCHAR2(11)
+ UNIQUENESS                                         VARCHAR2(9)
+ COMPRESSION                                        VARCHAR2(8)
+ PREFIX_LENGTH                                      NUMBER
+ TABLESPACE_NAME                                    VARCHAR2(30)
+ INI_TRANS                                          NUMBER
+ MAX_TRANS                                          NUMBER
+ INITIAL_EXTENT                                     NUMBER
+ NEXT_EXTENT                                        NUMBER
+ MIN_EXTENTS                                        NUMBER
+ MAX_EXTENTS                                        NUMBER
+ PCT_INCREASE                                       NUMBER
+ PCT_THRESHOLD                                      NUMBER
+ INCLUDE_COLUMN                                     NUMBER
+ FREELISTS                                          NUMBER
+ FREELIST_GROUPS                                    NUMBER
+ PCT_FREE                                           NUMBER
+ LOGGING                                            VARCHAR2(3)
+ BLEVEL                                             NUMBER
+ LEAF_BLOCKS                                        NUMBER
+ DISTINCT_KEYS                                      NUMBER
+ AVG_LEAF_BLOCKS_PER_KEY                            NUMBER
+ AVG_DATA_BLOCKS_PER_KEY                            NUMBER
+ CLUSTERING_FACTOR                                  NUMBER
+ STATUS                                             VARCHAR2(8)
+ NUM_ROWS                                           NUMBER
+ SAMPLE_SIZE                                        NUMBER
+ LAST_ANALYZED                                      DATE
+ DEGREE                                             VARCHAR2(40)
+ INSTANCES                                          VARCHAR2(40)
+ PARTITIONED                                        VARCHAR2(3)
+ TEMPORARY                                          VARCHAR2(1)
+ GENERATED                                          VARCHAR2(1)
+ SECONDARY                                          VARCHAR2(1)
+ BUFFER_POOL                                        VARCHAR2(7)
+ FLASH_CACHE                                        VARCHAR2(7)
+ CELL_FLASH_CACHE                                   VARCHAR2(7)
+ USER_STATS                                         VARCHAR2(3)
+ DURATION                                           VARCHAR2(15)
+ PCT_DIRECT_ACCESS                                  NUMBER
+ ITYP_OWNER                                         VARCHAR2(30)
+ ITYP_NAME                                          VARCHAR2(30)
+ PARAMETERS                                         VARCHAR2(1000)
+ GLOBAL_STATS                                       VARCHAR2(3)
+ DOMIDX_STATUS                                      VARCHAR2(12)
+ DOMIDX_OPSTATUS                                    VARCHAR2(6)
+ FUNCIDX_STATUS                                     VARCHAR2(8)
+ JOIN_INDEX                                         VARCHAR2(3)
+ IOT_REDUNDANT_PKEY_ELIM                            VARCHAR2(3)
+ DROPPED                                            VARCHAR2(3)
+ VISIBILITY                                         VARCHAR2(9)
+ DOMIDX_MANAGEMENT                                  VARCHAR2(14)
+ SEGMENT_CREATED                                    VARCHAR2(3)
+
+SQL> SELECT INDEX_NAME, TABLE_NAME FROM user_indexes;
+
+INDEX_NAME                     TABLE_NAME
+------------------------------ ------------------------------
+SYS_C0043987                   SUBSCRIBER_ACCOUNT_DETAILS
+SYS_C0043988                   SUBSCRIBER_ACCOUNT_DETAILS
+SYS_C0030696                   STUDENT_MASTERS
+SYS_C00156795                  STUDENTS
+SYS_C0030701                   STAFF_MASTERS
+SYS_C0033359                   SHOWS
+SYS_C00132766                  REGIONS
+SYS_C0044490                   QUESTION_MASTER
+SYS_C00151385                  PRODUCT31
+SYS_C0052489                   PRODUCT27
+PID23                          PRODUCT25
+
+INDEX_NAME                     TABLE_NAME
+------------------------------ ------------------------------
+TP_INDEX                       PRODUCT1
+V_INDEX                        PROD
+SYS_C0032939                   PARTICIPANTS
+SYS_C00132769                  LOCATIONS
+JHIST_EMP_ID_ST_DATE_PK        JOB_HISTORY
+SYS_C00132773                  JOBS
+SYS_IL0000102795C00003$$       INVENTORY
+FLIGHTNO_PK                    FLIGHTINFORMATION
+E                              EMP_22
+SYS_C00132774                  EMPLOYEES
+SYS_C0032197                   EMPLOYEE1
+
+INDEX_NAME                     TABLE_NAME
+------------------------------ ------------------------------
+JOB_INDEX                      EMPLOYEE
+SYS_C0079563                   EMPLOYEE
+SYS_C0032938                   WORKSHOP
+SYS_C0077695                   USERS_23
+ID27                           USERS27
+ID27F                          USERS27
+UID3                           USER24
+SYS_IL0000154663C00002$$       USER2
+SYS_IL0000154659C00003$$       USER1
+SYS_C0046444                   TRAINEES27
+SYS_C0045357                   TRAINEES
+
+INDEX_NAME                     TABLE_NAME
+------------------------------ ------------------------------
+FNAME                          TBLPRODUCTS
+SYS_C0036846                   TBLPRODUCTS
+SYS_C0030691                   DESIGNATION_MASTERS
+SYS_C0030692                   DESIGNATION_MASTERS
+SYS_C00156376                  DEPT_COPY
+SYS_C0045413                   DEPT1
+SYS_C0079562                   DEPT
+SYS_C0030693                   DEPARTMENT_MASTERS
+SYS_C0030694                   DEPARTMENT_MASTERS
+SYS_C00132771                  DEPARTMENTS
+DID                            DEMO
+
+INDEX_NAME                     TABLE_NAME
+------------------------------ ------------------------------
+SYS_C0043985                   DATASKY_PACKAGES
+CUSTID_PK                      CUSTOMERMASTER
+UQ_ID                          CUSTOMER23
+SYS_C00143969                  CUSTOMER1
+SYS_C00137230                  CUSTOMER
+CID_PK                         COURSES
+SYS_C00102427                  COURSE414
+SYS_C00132767                  COUNTRIES
+SYS_C00107173                  COMPLAINT1
+SYS_C0058170                   COMPLAINT
+INAME                          CATEGORY314
+
+INDEX_NAME                     TABLE_NAME
+------------------------------ ------------------------------
+SYS_C0036716                   CATEGORY314
+SYS_C00151251                  CATEGORY31
+SYS_C0077723                   CATEGORY23
+SYS_C0052484                   CATEGORY
+SYS_C0030706                   BOOK_MASTERS
+SYS_C0092995                   BOOKS
+BOOK_ID_PK                     BOOKINGINFORMATION
+SYS_C0042625                   BOOKING
+SYS_IL0000113051C00003$$       BOOK
+ABBREVATION_PK                 AIRPORT
+ADDR                           ADDRESS
+
+INDEX_NAME                     TABLE_NAME
+------------------------------ ------------------------------
+ACC_PK                         ACCOUNTMASTER
+
+67 rows selected.
+
+SQL> SELECT ename FROM employee WHERE job='manager';
+
+ENAME
+----------
+blake
+clark
+jones
+
+SQL> CREATE UNIQUE INDEX ON emp_22(empno);
+CREATE UNIQUE INDEX ON emp_22(empno)
+                    *
+ERROR at line 1:
+ORA-00953: missing or invalid index name
+
+
+SQL> CREATE UNIQUE INDEX uniindON emp_22(empno);
+CREATE UNIQUE INDEX uniindON emp_22(empno)
+                             *
+ERROR at line 1:
+ORA-00969: missing ON keyword
+
+
+SQL> CREATE UNIQUE INDEX uniind ON emp_22(empno);
+CREATE UNIQUE INDEX uniind ON emp_22(empno)
+                                     *
+ERROR at line 1:
+ORA-01408: such column list already indexed
+
+
+SQL> CREATE UNIQUE INDEX uniind ON emp_22(job);
+CREATE UNIQUE INDEX uniind ON emp_22(job)
+                              *
+ERROR at line 1:
+ORA-01452: cannot CREATE UNIQUE INDEX; duplicate keys found
+
+
+SQL> CREATE UNIQUE INDEX uniind ON employee(ename);
+
+Index created.
+
+SQL> CREATE INDEX fnIndex31 ON employee(length(ename));
+
+Index created.
+
+SQL> SELECT ename FROM employee WHERE 3>length(ename);
+
+no rows selected
+
+SQL> SELECT ename FROM employee WHERE length(ename)>2;
+
+ENAME
+----------
+Test
+king
+ward
+blake
+clark
+allen
+jones
+scott
+martin
+
+9 rows selected.
+
+SQL> DROP INDEX job_index;
+
+Index dropped.
+
+SQL>
