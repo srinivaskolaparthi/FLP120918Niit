@@ -1,0 +1,309 @@
+SQL> select ename FROM employee WHERE deptno=20;
+
+ENAME                                                                           
+----------                                                                      
+jones                                                                           
+scott                                                                           
+
+SQL> CREATE VIEW viewdemo1
+  2  AS
+  3  SELECT ename FROM employee WHERE deptno=10;
+
+View created.
+
+SQL> SELECT * FROM viewdemo1;
+
+ENAME                                                                           
+----------                                                                      
+king                                                                            
+blake                                                                           
+clark                                                                           
+
+SQL> CREATE VIEW viewdemo1
+  2  AS
+  3  SELECT ename FROM employee WHERE deptno=20;
+CREATE VIEW viewdemo1
+            *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object 
+
+
+SQL> CREATE OR REPLACE VIEW viewdemo1
+  2  AS
+  3  SELECT ename FROM employee WHERE deptno=20;
+
+View created.
+
+SQL> CREATE VIEW viewdemo2
+  2  AS
+  3  SELECT * FROM dept_details;
+
+View created.
+
+SQL> SELECT * FROM dept_details;
+
+    DEPTNO DNAME          LOC                                                   
+---------- -------------- -------------                                         
+         1 training       chennai                                               
+         4 admin          pune                                                  
+         6 admin          pune                                                  
+         8 admin          pune                                                  
+      2000 admin          pune                                                  
+      2005 admin          pune                                                  
+      2010 admin          pune                                                  
+      2015 admin          pune                                                  
+      2020 admin          pune                                                  
+      2025 admin          pune                                                  
+
+10 rows selected.
+
+SQL> SELECT * FROM viewdemo2;
+
+    DEPTNO DNAME          LOC                                                   
+---------- -------------- -------------                                         
+         1 training       chennai                                               
+         4 admin          pune                                                  
+         6 admin          pune                                                  
+         8 admin          pune                                                  
+      2000 admin          pune                                                  
+      2005 admin          pune                                                  
+      2010 admin          pune                                                  
+      2015 admin          pune                                                  
+      2020 admin          pune                                                  
+      2025 admin          pune                                                  
+
+10 rows selected.
+
+SQL> INSERT INTO viewdemo2 VALUES(10,'dd','f');
+
+1 row created.
+
+SQL> SELECT * FROM viewdemo2;
+
+    DEPTNO DNAME          LOC                                                   
+---------- -------------- -------------                                         
+         1 training       chennai                                               
+         4 admin          pune                                                  
+         6 admin          pune                                                  
+         8 admin          pune                                                  
+      2000 admin          pune                                                  
+      2005 admin          pune                                                  
+      2010 admin          pune                                                  
+      2015 admin          pune                                                  
+      2020 admin          pune                                                  
+      2025 admin          pune                                                  
+        10 dd             f                                                     
+
+11 rows selected.
+
+SQL> SELECT * FROM dept_details;
+
+    DEPTNO DNAME          LOC                                                   
+---------- -------------- -------------                                         
+         1 training       chennai                                               
+         4 admin          pune                                                  
+         6 admin          pune                                                  
+         8 admin          pune                                                  
+      2000 admin          pune                                                  
+      2005 admin          pune                                                  
+      2010 admin          pune                                                  
+      2015 admin          pune                                                  
+      2020 admin          pune                                                  
+      2025 admin          pune                                                  
+        10 dd             f                                                     
+
+11 rows selected.
+
+SQL> CREATE OR REPLACE VIEW viewdemo2
+  2  AS
+  3  SELECT * FROM dept_details WITH READ ONLY;
+
+View created.
+
+SQL> INSERT INTO viewdemo2 VALUES(10,'dd','f');
+INSERT INTO viewdemo2 VALUES(10,'dd','f')
+*
+ERROR at line 1:
+ORA-42399: cannot perform a DML operation on a read-only view 
+
+
+SQL> CREATE OR REPLACE VIEW viewdemo2
+  2  AS
+  3  SELECT * FROM dept_details WHERE deptno=10 WITH CHECK OPTION;
+
+View created.
+
+SQL> UPDATE viewdemo2 SET loc='BGL';
+
+1 row updated.
+
+SQL> CREATE OR REPLACE VIEW viewdemo2
+  2  AS
+  3  SELECT * FROM test31;
+SELECT * FROM test31
+              *
+ERROR at line 3:
+ORA-00942: table or view does not exist 
+
+
+SQL> CREATE OR REPLACE FORCE VIEW viewdemo2
+  2  AS
+  3  SELECT * FROM test31;
+
+Warning: View created with compilation errors.
+
+SQL> CREATE VIEW viewdemo3
+  2  AS
+  3  SELECT deptno,coun(*) FROM employee group by deptno;
+SELECT deptno,coun(*) FROM employee group by deptno
+                   *
+ERROR at line 3:
+ORA-00936: missing expression 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  CREATE VIEW viewdemo3
+  2  AS
+  3* SELECT deptno,count(*) FROM employee group by deptno
+SQL> /
+SELECT deptno,count(*) FROM employee group by deptno
+              *
+ERROR at line 3:
+ORA-00998: must name this expression with a column alias 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  CREATE VIEW viewdemo3
+  2  AS
+  3* SELECT deptno,count(*) as count FROM employee group by deptno
+SQL> /
+
+View created.
+
+SQL> SELECT * FROM viewdemo3;
+
+    DEPTNO      COUNT                                                           
+---------- ----------                                                           
+                    1                                                           
+        30          3                                                           
+        20          2                                                           
+        10          3                                                           
+
+SQL> INSERT INTO viewdemo3 VALUES(40,4);
+INSERT INTO viewdemo3 VALUES(40,4)
+*
+ERROR at line 1:
+ORA-01733: virtual column not allowed here 
+
+
+SQL> CREATE VIEW viewdemo4
+  2  AS
+  3  SELECT e.ename "Manager name" FROM employee e, employee m WHERE e.empno=m.empno;
+
+View created.
+
+SQL> SELECT * FROM viewdemo4;
+
+Manager na                                                                      
+----------                                                                      
+Test                                                                            
+king                                                                            
+blake                                                                           
+clark                                                                           
+allen                                                                           
+ward                                                                            
+jones                                                                           
+martin                                                                          
+scott                                                                           
+
+9 rows selected.
+
+SQL> DROP VIEW viewdemo4;
+
+View dropped.
+
+SQL> SELECT * FROM viewdemo4;
+SELECT * FROM viewdemo4
+              *
+ERROR at line 1:
+ORA-00942: table or view does not exist 
+
+
+SQL> SELECT s.staff_name,v.strength FROM staff_masters s,
+  2  (SELECT mgr_code,count(*) strength FROM staff_masters group by mgr_code) v
+  3  WHERE s.staff_code=v.mgr_code;
+
+STAFF_NAME                                           STRENGTH                   
+-------------------------------------------------- ----------                   
+John                                                        2                   
+Allen                                                       5                   
+Smith                                                       3                   
+
+SQL> SELECT ename,sal FROM employee ORDER BY sal desc;
+
+ENAME             SAL                                                           
+---------- ----------                                                           
+king             5400                                                           
+blake            5400                                                           
+clark            5400                                                           
+Test             5300                                                           
+scott            3300                                                           
+jones            3275                                                           
+allen            1900                                                           
+martin           1550                                                           
+ward             1550                                                           
+
+9 rows selected.
+
+SQL> SELECT ename,sal FROM (SELECT ename,sal FROM employee ORDER BY sal desc)
+  2  	WHERE rownum<3;
+
+ENAME             SAL                                                           
+---------- ----------                                                           
+king             5400                                                           
+clark            5400                                                           
+
+SQL> SELECT Emp.DEPTNO, Emp.SAL, Emp.JOB FROM
+  2        (SELECT DEPTNO, SAL, JOB FROM EMPLOYEE GROUP BY DEPTNO, SAL, JOB ORDER BY SAL DESC)Emp
+  3        WHERE ROWNUM<=3
+  4  ;
+
+    DEPTNO        SAL JOB                                                       
+---------- ---------- --------------------------------------------------        
+        10       5400 manager                                                   
+        10       5400 president                                                 
+                 5300 president                                                 
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  SELECT Emp.DEPTNO, Emp.SAL FROM
+  2        (SELECT DEPTNO, SAL, JOB FROM EMPLOYEE GROUP BY DEPTNO, SAL, JOB ORDER BY SAL DESC)Emp
+  3*       WHERE ROWNUM<=3
+  4  ;
+
+    DEPTNO        SAL                                                           
+---------- ----------                                                           
+        10       5400                                                           
+        10       5400                                                           
+                 5300                                                           
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  SELECT Emp.DEPTNO, Emp.SAL FROM
+  2        (SELECT DEPTNO, SAL, JOB FROM EMPLOYEE GROUP BY DEPTNO, SAL, JOB ORDER BY SAL DESC)Emp
+  3*       WHERE ROWNUM<=3
+  4  ;
+
+    DEPTNO        SAL                                                           
+---------- ----------                                                           
+        10       5400                                                           
+        10       5400                                                           
+                 5300                                                           
+
+SQL> spool off

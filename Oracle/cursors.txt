@@ -1,0 +1,277 @@
+SQL> BEGIN
+  2  	UPDATE employee SET sal=sal+100;
+  3  	DBMS_OUTPUT.PUT_LINE(SQL%ROWCOUNT);
+  4  END;
+  5  /
+9                                                                               
+
+PL/SQL procedure successfully completed.
+
+SQL> DECLARE
+  2  	CURSOR cName IS SELECT * FROM dept;
+  3     deptDetail dept%rowtype;
+  4  BEGIN
+  5  	OPEN cName; -- Opening a cursor
+  6  	FETCH cName INTO deptDetail;
+  7  	CLOSE cName; --Closing cursor
+  8  	DBMS_OUTPUT.PUT_LINE(deptDetail.dname);
+  9  END;
+ 10  /
+Test                                                                            
+
+PL/SQL procedure successfully completed.
+
+SQL> DECLARE
+  2  	CURSOR cName IS SELECT * FROM dept;
+  3     deptDetail dept%rowtype;
+  4  BEGIN
+  5  	IF cname%ISOPEN
+  6  	THEN
+  7  		null;
+  8  	ELSE
+  9  		OPEN cname;
+ 10  	END IF;
+ 11  	FETCH cname INTO deptDetail;
+ 12  	LOOP
+ 13  		FETCH cname INTO deptDetail;
+ 14  		EXIT WHEN cname%NOTFOUND;
+ 15  		DBMS_OUTPUT.PUT_LINE(deptDetail.dname);
+ 16  	END LOOP;
+ 17  END;
+ 18  /
+HR                                                                              
+nb                                                                              
+gh                                                                              
+ACCOUNTING                                                                      
+RESEARCH                                                                        
+SALES                                                                           
+OPERATIONS                                                                      
+dd                                                                              
+ee                                                                              
+ee                                                                              
+tt                                                                              
+ee                                                                              
+s                                                                               
+ee                                                                              
+sdf                                                                             
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	CURSOR cName IS SELECT * FROM dept;
+  3     deptDetail dept%rowtype;
+  4  BEGIN
+  5  	IF cname%ISOPEN
+  6  	THEN
+  7  		null;
+  8  	ELSE
+  9  		OPEN cname;
+ 10  	END IF;
+ 11  	FETCH cname INTO deptDetail;
+ 12  	LOOP
+ 13  		DBMS_OUTPUT.PUT_LINE(deptDetail.dname);
+ 14  		FETCH cname INTO deptDetail;
+ 15  		EXIT WHEN cname%NOTFOUND;
+ 16  	END LOOP;
+ 17  	CLOSE cname;
+ 18* END;
+SQL> /
+Test                                                                            
+HR                                                                              
+nb                                                                              
+gh                                                                              
+ACCOUNTING                                                                      
+RESEARCH                                                                        
+SALES                                                                           
+OPERATIONS                                                                      
+dd                                                                              
+ee                                                                              
+ee                                                                              
+tt                                                                              
+ee                                                                              
+s                                                                               
+ee                                                                              
+sdf                                                                             
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	CURSOR cName IS SELECT * FROM dept;
+  3     deptDetail dept%rowtype;
+  4  BEGIN
+  5  	IF cname%ISOPEN
+  6  	THEN
+  7  		null;
+  8  	ELSE
+  9  		OPEN cname;
+ 10  	END IF;
+ 11  	FETCH cname INTO deptDetail;
+ 12  	WHILE cname%NOTFOUND
+ 13  	LOOP
+ 14  		DBMS_OUTPUT.PUT_LINE(deptDetail.dname);
+ 15  		FETCH cname INTO deptDetail;
+ 16  	END LOOP;
+ 17  	CLOSE cname;
+ 18* END;
+SQL> /
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	CURSOR cName IS SELECT * FROM dept;
+  3     deptDetail dept%rowtype;
+  4  BEGIN
+  5  	IF cname%ISOPEN
+  6  	THEN
+  7  		null;
+  8  	ELSE
+  9  		OPEN cname;
+ 10  	END IF;
+ 11  	FETCH cname INTO deptDetail;
+ 12  	WHILE cname%FOUND
+ 13  	LOOP
+ 14  		DBMS_OUTPUT.PUT_LINE(deptDetail.dname);
+ 15  		FETCH cname INTO deptDetail;
+ 16  	END LOOP;
+ 17  	CLOSE cname;
+ 18* END;
+SQL> /
+Test                                                                            
+HR                                                                              
+nb                                                                              
+gh                                                                              
+ACCOUNTING                                                                      
+RESEARCH                                                                        
+SALES                                                                           
+OPERATIONS                                                                      
+dd                                                                              
+ee                                                                              
+ee                                                                              
+tt                                                                              
+ee                                                                              
+s                                                                               
+ee                                                                              
+sdf                                                                             
+
+PL/SQL procedure successfully completed.
+
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	CURSOR cName IS SELECT * FROM employee WHERE deptno=&no;
+  3     empDetail employee%rowtype;
+  4  BEGIN
+  5  	IF cname%ISOPEN
+  6  	THEN
+  7  		null;
+  8  	ELSE
+  9  		OPEN cname;
+ 10  	END IF;
+ 11  	FETCH cname INTO empDetail;
+ 12  	IF cname%ROWCOUNT>0 
+ 13  	THEN
+ 14  		WHILE cname%FOUND
+ 15  		LOOP
+ 16  			DBMS_OUTPUT.PUT_LINE(empDetail.ename);
+ 17  			FETCH cname INTO empDetail;
+ 18  		END LOOP;
+ 19  		CLOSE cname;
+ 20  	ELSE
+ 21  	  DBMS_OUTPUT.PUT_LINE('Employees not working in this department');
+ 22  	END IF;
+ 23* END;
+SQL> /
+Enter value for no: 10
+old   2: 	CURSOR cName IS SELECT * FROM employee WHERE deptno=&no;
+new   2: 	CURSOR cName IS SELECT * FROM employee WHERE deptno=10;
+king                                                                            
+blake                                                                           
+clark                                                                           
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for no: 90
+old   2: 	CURSOR cName IS SELECT * FROM employee WHERE deptno=&no;
+new   2: 	CURSOR cName IS SELECT * FROM employee WHERE deptno=90;
+Employees not working in this department                                        
+
+PL/SQL procedure successfully completed.
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	CURSOR cname IS SELECT * FROM dept;
+  3  BEGIN
+  4  	FOR rec IN cname
+  5  	LOOP
+  6  		DBMS_OUTPUT.PUT_LINE(rec.dname);
+  7  	END LOOP;
+  8* END;
+SQL> /
+Test                                                                            
+HR                                                                              
+nb                                                                              
+gh                                                                              
+ACCOUNTING                                                                      
+RESEARCH                                                                        
+SALES                                                                           
+OPERATIONS                                                                      
+dd                                                                              
+ee                                                                              
+ee                                                                              
+tt                                                                              
+ee                                                                              
+s                                                                               
+ee                                                                              
+sdf                                                                             
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	CURSOR cname IS SELECT ename,dname FROM employee e,dept d WHERE e.deptno=d.deptno;
+  3  BEGIN
+  4  	FOR rec IN cname
+  5  	LOOP
+  6  		DBMS_OUTPUT.PUT_LINE(rec.dname);
+  7  		DBMS_OUTPUT.PUT_LINE(rec.ename);
+  8  	END LOOP;
+  9* END;
+SQL> /
+ACCOUNTING                                                                      
+clark                                                                           
+ACCOUNTING                                                                      
+blake                                                                           
+ACCOUNTING                                                                      
+king                                                                            
+RESEARCH                                                                        
+scott                                                                           
+RESEARCH                                                                        
+jones                                                                           
+SALES                                                                           
+martin                                                                          
+SALES                                                                           
+ward                                                                            
+SALES                                                                           
+allen                                                                           
+
+PL/SQL procedure successfully completed.
+
+SQL> spool off

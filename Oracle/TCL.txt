@@ -1,0 +1,22 @@
+SQL> GRANT SELECT ON trg402.dept TO rathna;
+
+Grant succeeded.
+
+SQL> REVOKE SELECT ON trg402.dept FROM rathna;
+
+Revoke succeeded.
+
+SQL> SELECT * FROM trg402.dept;
+
+    DEPTNO DNAME          LOC
+---------- -------------- -------------
+        10 ACCOUNTING     NEWYORK
+        20 RESEARCH       DALLAS
+        30 SALES          CHICAGO
+        40 OPERATIONS     BOSTON
+
+SQL> SELECT * FROM trg402.dept;
+SELECT * FROM trg402.dept
+                     *
+ERROR at line 1:
+ORA-00942: table or view does not exist

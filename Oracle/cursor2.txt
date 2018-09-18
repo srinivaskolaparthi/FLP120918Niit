@@ -1,0 +1,209 @@
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	num NUMBER;
+  3  	CURSOR cname(no NUMBER) IS SELECT ename FROM employee WHERE deptno=no;
+  4  	vcEname employee.ename%TYPE;
+  5  BEGIN
+  6  	num:=&dno;
+  7  	OPEN cname(num);
+  8  	FETCH cname INTO vcEname;
+  9  	DBMS_OUTPUT.PUT_LINE('List of employees who are working in department'||num);
+ 10  	LOOP
+ 11  		DBMS_OUTPUT.PUT_LINE(vcEname);
+ 12  		FETCH cname INTO vcEname;
+ 13  		EXIT WHEN cname%NOTFOUND;
+ 14  	END LOOP;
+ 15* END;
+SQL> /
+Enter value for dno: 10
+old   6: 	num:=&dno;
+new   6: 	num:=10;
+List of employees who are working in department10                               
+king                                                                            
+blake                                                                           
+clark                                                                           
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for dno: 20
+old   6: 	num:=&dno;
+new   6: 	num:=20;
+List of employees who are working in department20                               
+jones                                                                           
+scott                                                                           
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	num NUMBER;
+  3  	CURSOR cname(no dept.deptno%TYPE) IS SELECT ename FROM employee WHERE deptno=no;
+  4  	vcEname employee.ename%TYPE;
+  5  BEGIN
+  6  	num:=&dno;
+  7  	OPEN cname(num);
+  8  	FETCH cname INTO vcEname;
+  9  	DBMS_OUTPUT.PUT_LINE('List of employees who are working in department'||num);
+ 10  	LOOP
+ 11  		DBMS_OUTPUT.PUT_LINE(vcEname);
+ 12  		FETCH cname INTO vcEname;
+ 13  		EXIT WHEN cname%NOTFOUND;
+ 14  	END LOOP;
+ 15* END;
+SQL> /
+Enter value for dno: 10
+old   6: 	num:=&dno;
+new   6: 	num:=10;
+List of employees who are working in department10                               
+king                                                                            
+blake                                                                           
+clark                                                                           
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	num NUMBER;
+  3  	CURSOR cname(no dept.deptno%TYPE) IS SELECT ename FROM employee WHERE deptno=no;
+  4  BEGIN
+  5  	num:=&dno;
+  6  	DBMS_OUTPUT.PUT_LINE('List of employees who are working in department'||num);
+  7  	FOR rec IN cname(num)
+  8  	LOOP
+  9  	   DBMS_OUTPUT.PUT_LINE(rec.ename);
+ 10  	END LOOP;
+ 11* END;
+SQL> /
+Enter value for dno: 10
+old   5: 	num:=&dno;
+new   5: 	num:=10;
+List of employees who are working in department10                               
+king                                                                            
+blake                                                                           
+clark                                                                           
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	TYPE details IS REF CURSOR;
+  3  	emp employee%ROWTYPE;
+  4  	dept1 dept%ROWTYPE;
+  5  	cname details;
+  6  BEGIN
+  7  	OPEN cname FOR SELECT * FROM employee;
+  8  	FETCH cname INTO emp;
+  9  	LOOP
+ 10  		DBMS_OUTPUT.PUT_LINE(emp.ename);
+ 11  		EXIT WHEN cname%NOTFOUND;
+ 12  		FETCH cname INTO emp;
+ 13  	END LOOP;
+ 14  	CLOSE cname;
+ 15  	OPEN cname FOR SELECT * FROM dept;
+ 16  	FETCH cname INTO dept1;
+ 17  	LOOP
+ 18  		DBMS_OUTPUT.PUT_LINE(dept1.dname);
+ 19  		EXIT WHEN cname%NOTFOUND;
+ 20  		FETCH cname INTO dept1;
+ 21  	END LOOP;
+ 22  	CLOSE cname;
+ 23* END;
+SQL> /
+Test                                                                            
+king                                                                            
+blake                                                                           
+clark                                                                           
+allen                                                                           
+ward                                                                            
+jones                                                                           
+martin                                                                          
+scott                                                                           
+scott                                                                           
+Test                                                                            
+HR                                                                              
+nb                                                                              
+gh                                                                              
+ACCOUNTING                                                                      
+RESEARCH                                                                        
+SALES                                                                           
+OPERATIONS                                                                      
+dd                                                                              
+ee                                                                              
+ee                                                                              
+tt                                                                              
+ee                                                                              
+s                                                                               
+ee                                                                              
+sdf                                                                             
+sdf                                                                             
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	TYPE details IS REF CURSOR RETURN employee%rowtype;
+  3  	emp employee%ROWTYPE;
+  4  	cname details;
+  5  BEGIN
+  6  	OPEN cname FOR SELECT * FROM employee WHERE deptno=10;
+  7  	FETCH cname INTO emp;
+  8  	LOOP
+  9  		DBMS_OUTPUT.PUT_LINE(emp.ename);
+ 10  		EXIT WHEN cname%NOTFOUND;
+ 11  		FETCH cname INTO emp;
+ 12  	END LOOP;
+ 13  	CLOSE cname;
+ 14  	OPEN cname FOR SELECT * FROM employee WHERE deptno=20;
+ 15  	FETCH cname INTO emp;
+ 16  	LOOP
+ 17  		DBMS_OUTPUT.PUT_LINE(emp.ename);
+ 18  		EXIT WHEN cname%NOTFOUND;
+ 19  		FETCH cname INTO emp;
+ 20  	END LOOP;
+ 21  	CLOSE cname;
+ 22* END;
+SQL> /
+king                                                                            
+blake                                                                           
+clark                                                                           
+clark                                                                           
+jones                                                                           
+scott                                                                           
+scott                                                                           
+
+PL/SQL procedure successfully completed.
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2      CURSOR c_staff  is SELECT staff_code, staff_masters.design_code FROM staff_masters,designation_masters
+  3       WHERE design_name = 'Professor' and staff_sal > 20000
+  4      and staff_masters.design_code =designation_masters.design_code
+  5      FOR UPDATE OF staff_masters.design_code NOWAIT;
+  6      d_code  designation_masters.design_code%type;
+  7  BEGIN
+  8  SELECT design_code into d_code FROM designation_masters WHERE design_name='Director';
+  9       FOR v_rec in c_staff
+ 10       LOOP
+ 11            UPDATE staff_masters SET design_code = d_code
+ 12             WHERE current of c_staff;
+ 13       END LOOP;
+ 14*    END;
+SQL> /
+
+PL/SQL procedure successfully completed.
+
+SQL> spool off
