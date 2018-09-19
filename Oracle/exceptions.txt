@@ -1,0 +1,357 @@
+SQL> DECLARE
+  2  	emp employee%ROWTYPE;
+  3  BEGIN
+  4  	SELECT * INTO emp FROM employee WHERE deptno=77;
+  5  END;
+  6  /
+DECLARE
+*
+ERROR at line 1:
+ORA-01403: no data found 
+ORA-06512: at line 4 
+
+
+SQL> DECLARE
+  2  	emp employee%ROWTYPE;
+  3  BEGIN
+  4  	SELECT * INTO emp FROM employee WHERE deptno=77;
+  5  EXCEPTION
+  6  	WHEN NO_DATA_FOUND THEN
+  7  		DBMS_OUTPUT.PUT_LINE('No employees exits');
+  8  END;
+  9  /
+
+PL/SQL procedure successfully completed.
+
+SQL> set serveroutput on
+SQL> /
+No employees exits                                                              
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	emp employee%ROWTYPE;
+  3  BEGIN
+  4  	SELECT * INTO emp FROM employee WHERE deptno=10;
+  5  EXCEPTION
+  6  	WHEN NO_DATA_FOUND THEN
+  7  		DBMS_OUTPUT.PUT_LINE('No employees exits');
+  8* END;
+SQL> /
+DECLARE
+*
+ERROR at line 1:
+ORA-01422: exact fetch returns more than requested number of rows 
+ORA-06512: at line 4 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	emp employee%ROWTYPE;
+  3  BEGIN
+  4  	SELECT * INTO emp FROM employee WHERE deptno=10;
+  5  EXCEPTION
+  6  	WHEN NO_DATA_FOUND THEN
+  7  		DBMS_OUTPUT.PUT_LINE('No employees exits');
+  8  	WHEN TOO_MANY_ROWS THEN
+  9  		DBMS_OUTPUT.PUT_LINE('More than 1 employee are working in this department');
+ 10* END;
+SQL> /
+More than 1 employee are working in this department                             
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	emp employee%ROWTYPE;
+  3  	result NUMBER;
+  4  BEGIN
+  5  	SELECT * INTO emp FROM employee WHERE deptno=10;
+  6  	result:=emp.sal/0;
+  7  EXCEPTION
+  8  	WHEN NO_DATA_FOUND THEN
+  9  		DBMS_OUTPUT.PUT_LINE('No employees exits');
+ 10  	WHEN TOO_MANY_ROWS THEN
+ 11  		DBMS_OUTPUT.PUT_LINE('More than 1 employee are working in this department');
+ 12  	WHEN OTHERS THEN
+ 13  		DBMS_OUTPUT.PUT_LINE('Other exception occurs');
+ 14* END;
+SQL> /
+More than 1 employee are working in this department                             
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	emp employee%ROWTYPE;
+  3  	result NUMBER;
+  4  BEGIN
+  5  	SELECT * INTO emp FROM employee WHERE deptno=10 and empno=7698;
+  6  	result:=emp.sal/0;
+  7  EXCEPTION
+  8  	WHEN NO_DATA_FOUND THEN
+  9  		DBMS_OUTPUT.PUT_LINE('No employees exits');
+ 10  	WHEN TOO_MANY_ROWS THEN
+ 11  		DBMS_OUTPUT.PUT_LINE('More than 1 employee are working in this department');
+ 12  	WHEN OTHERS THEN
+ 13  		DBMS_OUTPUT.PUT_LINE('Other exception occurs');
+ 14* END;
+SQL> /
+Other exception occurs                                                          
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	emp employee%ROWTYPE;
+  3  	result NUMBER;
+  4  BEGIN
+  5  	SELECT * INTO emp FROM employee WHERE deptno=10 and empno=7698;
+  6  	result:=emp.sal/0;
+  7  EXCEPTION
+  8  	WHEN NO_DATA_FOUND THEN
+  9  		DBMS_OUTPUT.PUT_LINE('No employees exits');
+ 10  	WHEN TOO_MANY_ROWS THEN
+ 11  		DBMS_OUTPUT.PUT_LINE('More than 1 employee are working in this department');
+ 12  	WHEN OTHERS THEN
+ 13  		DBMS_OUTPUT.PUT_LINE('Other exception occurs');
+ 14  	  DBMS_OUTPUT.PUT_LINE(SQLCODE||SQLERRM);
+ 15* END;
+SQL> /
+Other exception occurs                                                          
+-1476ORA-01476: divisor is equal to zero                                        
+
+PL/SQL procedure successfully completed.
+
+SQL> desc errorlog;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ERRORNO                                            NUMBER
+ DESCRIPTION                                        VARCHAR2(80)
+ ERRORDATE                                          DATE
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	emp employee%ROWTYPE;
+  3  	result NUMBER;
+  4  BEGIN
+  5  	SELECT * INTO emp FROM employee WHERE deptno=10 and empno=7698;
+  6  	result:=emp.sal/0;
+  7  EXCEPTION
+  8  	WHEN NO_DATA_FOUND THEN
+  9  		DBMS_OUTPUT.PUT_LINE('No employees exits');
+ 10  	WHEN TOO_MANY_ROWS THEN
+ 11  		DBMS_OUTPUT.PUT_LINE('More than 1 employee are working in this department');
+ 12  	WHEN OTHERS THEN
+ 13  		DBMS_OUTPUT.PUT_LINE('Other exception occurs');
+ 14  	  DBMS_OUTPUT.PUT_LINE(SQLCODE||SQLERRM);
+ 15  	  INSERT INTO errorlog VALUES(22,SQLERRM,sysdate);
+ 16* END;
+SQL> /
+	  INSERT INTO errorlog VALUES(22,SQLERRM,sysdate);
+	                                 *
+ERROR at line 15:
+ORA-06550: line 15, column 35: 
+PL/SQL: ORA-00984: column not allowed here 
+ORA-06550: line 15, column 4: 
+PL/SQL: SQL Statement ignored 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	emp employee%ROWTYPE;
+  3  	result NUMBER;
+  4  	scode VARCHAR2(20);
+  5  	msg VARCHAR2(40);
+  6  BEGIN
+  7  	SELECT * INTO emp FROM employee WHERE deptno=10 and empno=7698;
+  8  	result:=emp.sal/0;
+  9  EXCEPTION
+ 10  	WHEN NO_DATA_FOUND THEN
+ 11  		DBMS_OUTPUT.PUT_LINE('No employees exits');
+ 12  	WHEN TOO_MANY_ROWS THEN
+ 13  		DBMS_OUTPUT.PUT_LINE('More than 1 employee are working in this department');
+ 14  	WHEN OTHERS THEN
+ 15  		DBMS_OUTPUT.PUT_LINE('Other exception occurs');
+ 16  	  DBMS_OUTPUT.PUT_LINE(SQLCODE||SQLERRM);
+ 17  	  scode:=SQLCODE;
+ 18  	  msg:=SQLERRM;
+ 19  	  INSERT INTO errorlog VALUES(22,msg,sysdate);
+ 20* END;
+SQL> /
+Other exception occurs                                                          
+-1476ORA-01476: divisor is equal to zero                                        
+
+PL/SQL procedure successfully completed.
+
+SQL> SELECT * FROM errorlog;
+
+   ERRORNO                                                                      
+----------                                                                      
+DESCRIPTION                                                                     
+--------------------------------------------------------------------------------
+ERRORDATE                                                                       
+---------                                                                       
+        22                                                                      
+ORA-01476: divisor is equal to zero                                             
+26-AUG-14                                                                       
+                                                                                
+         1                                                                      
+rr                                                                              
+21-MAY-14                                                                       
+
+   ERRORNO                                                                      
+----------                                                                      
+DESCRIPTION                                                                     
+--------------------------------------------------------------------------------
+ERRORDATE                                                                       
+---------                                                                       
+                                                                                
+     -1422                                                                      
+ORA-01422: exact fetch returns more than requested number of rows               
+21-MAY-14                                                                       
+                                                                                
+
+SQL> DECLARE
+  2  	CURSOR cname IS SELECT ename FROM employee WHERE deptno=&num;
+  3  	vcEname employee.ename%TYPE;
+  4  BEGIN
+  5  	OPEN cname;
+  6  	FETCH cname INTO vcEname;
+  7  	LOOP
+  8  		DBMS_OUTPUT.PUT_LINE(vcEname);
+  9  		EXIT WHEN cname%NOTFOUND;
+ 10  		FETCH cname INTO vcEname;
+ 11  	END LOOP;
+ 12  END;
+ 13  /
+Enter value for num: 10
+old   2: 	CURSOR cname IS SELECT ename FROM employee WHERE deptno=&num;
+new   2: 	CURSOR cname IS SELECT ename FROM employee WHERE deptno=10;
+king                                                                            
+blake                                                                           
+clark                                                                           
+clark                                                                           
+
+PL/SQL procedure successfully completed.
+
+SQL> /
+Enter value for num: 33
+old   2: 	CURSOR cname IS SELECT ename FROM employee WHERE deptno=&num;
+new   2: 	CURSOR cname IS SELECT ename FROM employee WHERE deptno=33;
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	CURSOR cname IS SELECT ename FROM employee WHERE deptno=&num;
+  3  	vcEname employee.ename%TYPE;
+  4  BEGIN
+  5  	OPEN cname;
+  6  	FETCH cname INTO vcEname;
+  7  	IF cname%ROWCOUNT>0
+  8  	THEN
+  9  	LOOP
+ 10  		DBMS_OUTPUT.PUT_LINE(vcEname);
+ 11  		EXIT WHEN cname%NOTFOUND;
+ 12  		FETCH cname INTO vcEname;
+ 13  	END LOOP;
+ 14  	ELSE
+ 15  		DBMS_OUTPUT.PUT_LINE('msg');
+ 16  	END IF;
+ 17* END;
+SQL> /
+Enter value for num: 77
+old   2: 	CURSOR cname IS SELECT ename FROM employee WHERE deptno=&num;
+new   2: 	CURSOR cname IS SELECT ename FROM employee WHERE deptno=77;
+msg                                                                             
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	CURSOR cname IS SELECT ename FROM employee WHERE deptno=&num;
+  3  	vcEname employee.ename%TYPE;
+  4  	no_data EXCEPTION;
+  5  BEGIN
+  6  	OPEN cname;
+  7  	FETCH cname INTO vcEname;
+  8  	IF cname%ROWCOUNT>0
+  9  	THEN
+ 10  	LOOP
+ 11  		DBMS_OUTPUT.PUT_LINE(vcEname);
+ 12  		EXIT WHEN cname%NOTFOUND;
+ 13  		FETCH cname INTO vcEname;
+ 14  	END LOOP;
+ 15  	ELSE
+ 16  		--DBMS_OUTPUT.PUT_LINE('msg');
+ 17  		RAISE no_data;
+ 18  	END IF;
+ 19  EXCEPTION
+ 20  	WHEN no_data THEN
+ 21  		DBMS_OUTPUT.PUT_LINE('No data exists');
+ 22* END;
+SQL> /
+Enter value for num: 88
+old   2: 	CURSOR cname IS SELECT ename FROM employee WHERE deptno=&num;
+new   2: 	CURSOR cname IS SELECT ename FROM employee WHERE deptno=88;
+No data exists                                                                  
+
+PL/SQL procedure successfully completed.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  DECLARE
+  2  	CURSOR cname IS SELECT ename FROM employee WHERE deptno=&num;
+  3  	vcEname employee.ename%TYPE;
+  4  	no_data EXCEPTION;
+  5  	PRAGMA EXCEPTION_INIT(no_data,-20888);
+  6  BEGIN
+  7  	OPEN cname;
+  8  	FETCH cname INTO vcEname;
+  9  	IF cname%ROWCOUNT>0
+ 10  	THEN
+ 11  	LOOP
+ 12  		DBMS_OUTPUT.PUT_LINE(vcEname);
+ 13  		EXIT WHEN cname%NOTFOUND;
+ 14  		FETCH cname INTO vcEname;
+ 15  	END LOOP;
+ 16  	ELSE
+ 17  		--DBMS_OUTPUT.PUT_LINE('msg');
+ 18  		--RAISE no_data;
+ 19  		RAISE_APPLICATION_ERROR(-20888,'No data exists');
+ 20  	END IF;
+ 21  EXCEPTION
+ 22  	WHEN no_data THEN
+ 23  		DBMS_OUTPUT.PUT_LINE('No data exists');
+ 24  		DBMS_OUTPUT.PUT_LINE(SQLCODE||SQLERRM);
+ 25* END;
+SQL> /
+Enter value for num: 77
+old   2: 	CURSOR cname IS SELECT ename FROM employee WHERE deptno=&num;
+new   2: 	CURSOR cname IS SELECT ename FROM employee WHERE deptno=77;
+No data exists                                                                  
+-20888ORA-20888: No data exists                                                 
+
+PL/SQL procedure successfully completed.
+
